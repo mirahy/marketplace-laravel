@@ -69,23 +69,20 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="text-sm font-medium text-gray-700">UF <span class="text-gray-400 font-normal">(opcional)</span></label>
-                <x-searchable-select wire:model.live="state" :options="$stateOptions" :selected="$state" placeholder="Selecione" />
-                @error('state') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="text-sm font-medium text-gray-700">Cidade <span class="text-gray-400 font-normal">(opcional)</span></label>
-                <x-searchable-select wire:model="city" wire:key="city-select-{{ $state }}" :options="$cityOptions" :selected="$city" :placeholder="$state ? 'Selecione' : 'Selecione a UF primeiro'" />
-                @error('city') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
-            </div>
-        </div>
+        @php
+            $hasAddressData = $addressType || $addressStreet || $addressNumber || $addressNeighborhood || $addressComplement || $state || $city;
+        @endphp
 
-        <div class="border-t border-gray-100 pt-4">
-            <p class="text-sm font-medium text-gray-800 mb-3">Endereço <span class="text-gray-400 font-normal">(opcional)</span></p>
+        <div class="border-t border-gray-100 pt-4" x-data="{ open: {{ $hasAddressData ? 'true' : 'false' }} }">
+            <button type="button" @click="open = ! open"
+                class="flex items-center justify-between w-full text-left">
+                <span class="text-sm font-medium text-gray-800">Endereço <span class="text-gray-400 font-normal">(opcional)</span></span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+            </button>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div x-show="open" x-cloak class="grid grid-cols-2 gap-4 mt-3">
                 <div>
                     <label class="text-sm font-medium text-gray-700">Tipo de logradouro</label>
                     <select wire:model="addressType" class="mt-1 w-full rounded-md border-gray-300">
@@ -102,9 +99,7 @@
                         class="mt-1 w-full rounded-md border-gray-300">
                     @error('addressStreet') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                 </div>
-            </div>
 
-            <div class="grid grid-cols-2 gap-4 mt-4">
                 <div>
                     <label class="text-sm font-medium text-gray-700">Número</label>
                     <input type="text" wire:model="addressNumber" class="mt-1 w-full rounded-md border-gray-300">
@@ -115,13 +110,24 @@
                     <input type="text" wire:model="addressNeighborhood" class="mt-1 w-full rounded-md border-gray-300">
                     @error('addressNeighborhood') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                 </div>
-            </div>
 
-            <div class="mt-4">
-                <label class="text-sm font-medium text-gray-700">Complemento</label>
-                <input type="text" wire:model="addressComplement" placeholder="Apto, bloco, ponto de referência..."
-                    class="mt-1 w-full rounded-md border-gray-300">
-                @error('addressComplement') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                <div class="col-span-2">
+                    <label class="text-sm font-medium text-gray-700">Complemento</label>
+                    <input type="text" wire:model="addressComplement" placeholder="Apto, bloco, ponto de referência..."
+                        class="mt-1 w-full rounded-md border-gray-300">
+                    @error('addressComplement') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium text-gray-700">UF</label>
+                    <x-searchable-select wire:model.live="state" :options="$stateOptions" :selected="$state" placeholder="Selecione" />
+                    @error('state') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Cidade</label>
+                    <x-searchable-select wire:model="city" wire:key="city-select-{{ $state }}" :options="$cityOptions" :selected="$city" :placeholder="$state ? 'Selecione' : 'Selecione a UF primeiro'" />
+                    @error('city') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
             </div>
         </div>
 
