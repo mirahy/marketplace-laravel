@@ -2,9 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Enums\ListingStatus;
 use App\Models\Conversation;
 use App\Models\Listing;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -13,6 +13,9 @@ use Livewire\Component;
 class ListingShow extends Component
 {
     public Listing $listing;
+
+    /** @var array<int, int> */
+    public array $viewHistory = [];
 
     public function mount(Listing $listing): void
     {
@@ -24,6 +27,19 @@ class ListingShow extends Component
             $listing->increment('views_count');
             session()->put($viewedKey, true);
         }
+    }
+
+    /**
+     * @param  array<int, mixed>  $ids
+     */
+    public function setViewHistory(array $ids): void
+    {
+        $this->viewHistory = collect($ids)
+            ->filter(fn ($id) => is_numeric($id))
+            ->map(fn ($id) => (int) $id)
+            ->take(20)
+            ->values()
+            ->all();
     }
 
     public function sendMessage()
@@ -46,18 +62,83 @@ class ListingShow extends Component
         return redirect()->route('messages.show', $conversation);
     }
 
-    public function render()
+    /**
+     * Up to 10 suggestions: the first 2 from the current listing's category,
+     * the rest from the categories of the recently viewed listings (most
+     * recent first). If the current category has no more items, the whole
+     * quota naturally falls through to the view-history-based listings.
+     */
+    protected function resolveRelated(): Collection
     {
-        $related = Listing::query()
+        $target = 10;
+        $excludeIds = [$this->listing->id, ...$this->viewHistory];
+
+        $categoryItems = Listing::query()
             ->with('images')
-            ->where('status', ListingStatus::Ativo)
+            ->active()
             ->where('category_id', $this->listing->category_id)
-            ->whereKeyNot($this->listing->id)
-            ->take(4)
+            ->whereNotIn('id', $excludeIds)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->take(2)
             ->get();
 
+        $remaining = $target - $categoryItems->count();
+
+        if ($remaining <= 0 || empty($this->viewHistory)) {
+            return $categoryItems;
+        }
+
+        $historyCategoryIds = Listing::query()
+            ->whereIn('id', $this->viewHistory)
+            ->pluck('category_id', 'id');
+
+        $orderedCategoryIds = collect($this->viewHistory)
+            ->map(fn ($id) => $historyCategoryIds->get($id))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($orderedCategoryIds->isEmpty()) {
+            return $categoryItems;
+        }
+
+        $alreadyPicked = $categoryItems->pluck('id')->all();
+
+        $superset = Listing::query()
+            ->with('images')
+            ->active()
+            ->whereIn('category_id', $orderedCategoryIds)
+            ->whereNotIn('id', [...$excludeIds, ...$alreadyPicked])
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit(60)
+            ->get()
+            ->groupBy('category_id');
+
+        $historyItems = collect();
+
+        foreach ($orderedCategoryIds as $categoryId) {
+            if ($historyItems->count() >= $remaining) {
+                break;
+            }
+
+            foreach ($superset->get($categoryId, collect()) as $item) {
+                if ($historyItems->count() >= $remaining) {
+                    break;
+                }
+
+                $historyItems->push($item);
+            }
+        }
+
+        return $categoryItems->concat($historyItems);
+    }
+
+    public function render()
+    {
         return view('livewire.listing-show', [
-            'related' => $related,
+            'related' => $this->resolveRelated(),
         ]);
     }
 }

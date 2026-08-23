@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Notifications\ListingStatusUpdated;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,6 +61,11 @@ class Listing extends Model
     public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class);
+    }
+
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('status', ListingStatus::Ativo);
     }
 
     public function approve(): void

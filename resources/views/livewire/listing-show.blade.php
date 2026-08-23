@@ -2,7 +2,16 @@
 @use('Illuminate\Support\Str')
 @use('Illuminate\Support\Number')
 
-<div>
+<div x-init="
+    const key = 'adbn_viewed_listings';
+    let history = [];
+    try { history = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { history = []; }
+    $wire.setViewHistory(history);
+    try {
+        const updated = [{{ $listing->id }}, ...history.filter(id => id !== {{ $listing->id }})].slice(0, 20);
+        localStorage.setItem(key, JSON.stringify(updated));
+    } catch (e) {}
+">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-2">
             @php $imageCount = $listing->images->count(); @endphp
