@@ -4,10 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Conversation;
 use App\Models\Message;
+use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Number;
+use Illuminate\Support\Str;
 
 class NewMessageReceived extends Notification
 {
@@ -23,7 +25,7 @@ class NewMessageReceived extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -39,5 +41,20 @@ class NewMessageReceived extends Notification
             ->line('Mensagem: "'.$this->message->body.'"')
             ->action('Ver conversa', url('/mensagens/'.$this->conversation->id))
             ->line('Responda diretamente pelo Marketplace para continuar a negociação.');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toDatabase(object $notifiable): array
+    {
+        $listing = $this->conversation->listing;
+        $url = '/mensagens/'.$this->conversation->id;
+
+        return FilamentNotification::make()
+            ->title('Nova mensagem sobre "'.$listing->title.'"')
+            ->body($this->message->sender->name.': '.Str::limit($this->message->body, 80))
+            ->icon('heroicon-o-chat-bubble-left-right')
+            ->getDatabaseMessage() + ['url' => $url];
     }
 }

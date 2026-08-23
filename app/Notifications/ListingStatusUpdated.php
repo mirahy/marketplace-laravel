@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\ListingStatus;
 use App\Models\Listing;
+use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -23,7 +24,7 @@ class ListingStatusUpdated extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -43,5 +44,21 @@ class ListingStatusUpdated extends Notification
             ->subject('Seu anúncio foi rejeitado')
             ->line('Seu anúncio foi analisado por um administrador e não foi aprovado para publicação.')
             ->action('Ver meus anúncios', url('/meus-anuncios'));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toDatabase(object $notifiable): array
+    {
+        $isApproved = $this->listing->status === ListingStatus::Ativo;
+
+        return FilamentNotification::make()
+            ->title($isApproved ? 'Anúncio aprovado' : 'Anúncio rejeitado')
+            ->body('"'.$this->listing->title.'" foi '.($isApproved ? 'aprovado e já está publicado.' : 'rejeitado.'))
+            ->icon($isApproved ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+            ->getDatabaseMessage() + [
+                'url' => $isApproved ? '/anuncios/'.$this->listing->slug : '/meus-anuncios',
+            ];
     }
 }
