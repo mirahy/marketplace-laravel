@@ -45,12 +45,12 @@ class Listing extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->withTrashed();
     }
 
     public function images(): HasMany
@@ -71,12 +71,18 @@ class Listing extends Model
     public function approve(): void
     {
         $this->update(['status' => ListingStatus::Ativo, 'published_at' => now()]);
-        Notification::send($this->user, new ListingStatusUpdated($this));
+
+        if ($this->user) {
+            Notification::send($this->user, new ListingStatusUpdated($this));
+        }
     }
 
     public function reject(): void
     {
         $this->update(['status' => ListingStatus::Rejeitado]);
-        Notification::send($this->user, new ListingStatusUpdated($this));
+
+        if ($this->user) {
+            Notification::send($this->user, new ListingStatusUpdated($this));
+        }
     }
 }

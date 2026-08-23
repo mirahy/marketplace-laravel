@@ -56,13 +56,17 @@
                 <hr class="my-4">
 
                 <p class="text-sm font-medium text-gray-800">Vendedor</p>
-                <p class="text-sm text-gray-600">{{ $listing->user->name }}</p>
-                @if ($listing->user->phone && $listing->user->show_phone)
-                    <p class="text-sm text-gray-600">{{ $listing->user->phone }}</p>
+                @if ($listing->user)
+                    <p class="text-sm text-gray-600">{{ $listing->user->name }}</p>
+                    @if ($listing->user->phone && $listing->user->show_phone)
+                        <p class="text-sm text-gray-600">{{ $listing->user->phone }}</p>
+                    @endif
+                @else
+                    <p class="text-sm text-gray-400">Vendedor indisponível</p>
                 @endif
 
                 @auth
-                    @if (auth()->id() !== $listing->user_id)
+                    @if ($listing->user && auth()->id() !== $listing->user_id)
                         <button wire:click="sendMessage"
                             class="mt-4 w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
                             Enviar mensagem

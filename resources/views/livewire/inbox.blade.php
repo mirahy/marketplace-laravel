@@ -18,7 +18,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="font-medium text-gray-900">{{ $conversation->listing->title }}</p>
-                            <p class="text-sm text-gray-500">Com {{ $otherUser->name }}</p>
+                            <p class="text-sm text-gray-500">Com {{ $otherUser->name ?? 'Usuário removido' }}</p>
                             @if ($lastMessage)
                                 <p class="text-sm text-gray-400 truncate mt-1">{{ $lastMessage->body }}</p>
                             @endif

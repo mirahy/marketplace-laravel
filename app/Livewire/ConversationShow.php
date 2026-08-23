@@ -45,7 +45,9 @@ class ConversationShow extends Component
             ? $this->conversation->seller
             : $this->conversation->buyer;
 
-        Notification::send($recipient, new NewMessageReceived($message, $this->conversation));
+        if ($recipient) {
+            Notification::send($recipient, new NewMessageReceived($message, $this->conversation));
+        }
 
         $this->body = '';
     }
