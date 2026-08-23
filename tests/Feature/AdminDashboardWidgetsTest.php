@@ -2,13 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CategoryStatus;
 use App\Enums\ListingStatus;
 use App\Enums\UserStatus;
 use App\Filament\Widgets\LatestListingsWidget;
+use App\Filament\Widgets\PendingCategoriesWidget;
 use App\Filament\Widgets\PendingListingsWidget;
 use App\Filament\Widgets\PendingUsersWidget;
+use App\Models\Category;
 use App\Models\Listing;
 use App\Models\User;
+use App\Notifications\CategoryStatusUpdated;
 use App\Notifications\ListingStatusUpdated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -63,5 +67,31 @@ class AdminDashboardWidgetsTest extends TestCase
             ->callTableAction('reject', $pending);
 
         $this->assertSame(UserStatus::Rejeitado, $pending->refresh()->status);
+    }
+
+    public function test_pending_categories_widget_can_approve_and_reject(): void
+    {
+        Notification::fake();
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $author = User::factory()->create();
+        $pending = Category::factory()->create([
+            'is_active' => false,
+            'status' => CategoryStatus::Pendente,
+            'created_by' => $author->id,
+        ]);
+        $approved = Category::factory()->create();
+
+        Livewire::actingAs($admin)
+            ->test(PendingCategoriesWidget::class)
+            ->assertCanSeeTableRecords([$pending])
+            ->assertCanNotSeeTableRecords([$approved])
+            ->callTableAction('approve', $pending);
+
+        $pending->refresh();
+
+        $this->assertSame(CategoryStatus::Aprovado, $pending->status);
+        $this->assertTrue($pending->is_active);
+        Notification::assertSentTo($author, CategoryStatusUpdated::class);
     }
 }

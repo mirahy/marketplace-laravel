@@ -19,14 +19,7 @@
 
         <div>
             <label class="text-sm font-medium text-gray-700">Categoria</label>
-            <select wire:model="categoryId" class="mt-1 w-full rounded-md border-gray-300">
-                <option value="">Selecione</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">
-                        {{ $category->name }}{{ $category->is_active ? '' : ' (pendente de aprovação)' }}
-                    </option>
-                @endforeach
-            </select>
+            <x-searchable-select wire:model="categoryId" :options="$categoryOptions" :selected="$categoryId" placeholder="Selecione" />
             @error('categoryId') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
 
             @if (! $showNewCategoryForm)
@@ -82,7 +75,7 @@
             </div>
             <div>
                 <label class="text-sm font-medium text-gray-700">UF</label>
-                <input type="text" maxlength="2" wire:model="state" class="mt-1 w-full rounded-md border-gray-300 uppercase">
+                <x-searchable-select wire:model="state" :options="$stateOptions" :selected="$state" placeholder="Selecione" />
                 @error('state') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
         </div>

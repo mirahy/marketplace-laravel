@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\BrazilianState;
 use App\Enums\CategoryStatus;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -117,7 +119,7 @@ class ListingForm extends Component
             'condition' => ['required', 'in:novo,usado'],
             'categoryId' => ['required', 'exists:categories,id'],
             'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:2'],
+            'state' => ['required', Rule::enum(BrazilianState::class)],
             'newPhotos.*' => ['nullable', 'image', 'max:4096'],
         ]);
 
@@ -168,8 +170,17 @@ class ListingForm extends Component
             }
         }
 
+        $categoryOptions = $categories->mapWithKeys(fn ($category) => [
+            $category->id => $category->name.($category->is_active ? '' : ' (pendente de aprovação)'),
+        ]);
+
+        $stateOptions = collect(BrazilianState::cases())->mapWithKeys(fn ($state) => [
+            $state->value => $state->value.' - '.$state->getLabel(),
+        ]);
+
         return view('livewire.listing-form', [
-            'categories' => $categories,
+            'categoryOptions' => $categoryOptions,
+            'stateOptions' => $stateOptions,
             'conditions' => ListingCondition::cases(),
         ]);
     }

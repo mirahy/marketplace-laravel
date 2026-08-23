@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\BrazilianState;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Models\Category;
@@ -67,9 +68,16 @@ class ListingIndex extends Component
             ->when($this->sort === 'recent', fn ($q) => $q->latest('published_at'))
             ->paginate(12);
 
+        $categoryOptions = Category::query()->where('is_active', true)->orderBy('order')->pluck('name', 'id');
+
+        $stateOptions = collect(BrazilianState::cases())->mapWithKeys(fn ($state) => [
+            $state->value => $state->value.' - '.$state->getLabel(),
+        ]);
+
         return view('livewire.listing-index', [
             'listings' => $listings,
-            'categories' => Category::query()->where('is_active', true)->orderBy('order')->get(),
+            'categoryOptions' => $categoryOptions,
+            'stateOptions' => $stateOptions,
             'conditions' => ListingCondition::cases(),
         ]);
     }

@@ -9,12 +9,7 @@
 
             <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Categoria</label>
-                <select wire:model.live="categoryId" class="mt-1 w-full rounded-md border-gray-300 text-sm">
-                    <option value="">Todas</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
+                <x-searchable-select wire:model.live="categoryId" :options="$categoryOptions" :selected="$categoryId" placeholder="Todas" />
             </div>
 
             <div>
@@ -40,8 +35,7 @@
 
             <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">UF</label>
-                <input type="text" maxlength="2" wire:model.live.debounce.300ms="state" placeholder="SP"
-                    class="mt-1 w-full rounded-md border-gray-300 text-sm uppercase">
+                <x-searchable-select wire:model.live="state" :options="$stateOptions" :selected="$state" placeholder="Todas" />
             </div>
 
             <div>

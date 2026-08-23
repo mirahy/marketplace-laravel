@@ -46,7 +46,7 @@ class MarketplaceFlowTest extends TestCase
             ->set('condition', 'usado')
             ->set('categoryId', $category->id)
             ->set('city', 'Curitiba')
-            ->set('state', 'pr')
+            ->set('state', 'PR')
             ->set('newPhotos', [UploadedFile::fake()->image('bike.jpg')])
             ->call('save')
             ->assertRedirect(route('listings.mine'));
@@ -64,6 +64,24 @@ class MarketplaceFlowTest extends TestCase
         $listing->update(['status' => ListingStatus::Ativo, 'published_at' => now()]);
 
         $this->get('/anuncios')->assertOk()->assertSee('Bicicleta aro 29');
+    }
+
+    public function test_listing_form_rejects_an_invalid_state_code(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(ListingForm::class)
+            ->set('title', 'Sofá')
+            ->set('description', 'Em bom estado.')
+            ->set('price', 100)
+            ->set('condition', 'usado')
+            ->set('categoryId', $category->id)
+            ->set('city', 'Curitiba')
+            ->set('state', 'XX')
+            ->call('save')
+            ->assertHasErrors(['state']);
     }
 
     public function test_create_and_edit_listing_routes_are_reachable_over_http(): void
