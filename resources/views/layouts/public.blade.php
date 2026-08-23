@@ -7,24 +7,29 @@
 
         <title>{{ $title ?? config('app.name') }}</title>
 
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-gray-50">
-        <nav class="bg-white border-b border-gray-100">
+        <nav class="bg-[#0b1440] border-b border-white/10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center gap-8">
-                        <a href="{{ route('home') }}" wire:navigate class="text-xl font-bold text-amber-600">
-                            {{ config('app.name') }}
+                        <a href="{{ route('home') }}" wire:navigate class="flex items-center gap-2">
+                            <x-adbn-logo class="h-9 w-auto" />
+                            <span class="text-lg font-bold text-white leading-tight">
+                                ADBN <span class="text-orange-400 font-semibold">Marketplace</span>
+                            </span>
                         </a>
-                        <div class="hidden sm:flex gap-6 text-sm font-medium text-gray-600">
-                            <a href="{{ route('listings.index') }}" wire:navigate class="hover:text-amber-600">Anúncios</a>
+                        <div class="hidden sm:flex gap-6 text-sm font-medium text-slate-300">
+                            <a href="{{ route('listings.index') }}" wire:navigate class="hover:text-orange-400">Anúncios</a>
                             @auth
-                                <a href="{{ route('listings.mine') }}" wire:navigate class="hover:text-amber-600">Meus anúncios</a>
-                                <a href="{{ route('messages.index') }}" wire:navigate class="hover:text-amber-600">Mensagens</a>
+                                <a href="{{ route('listings.mine') }}" wire:navigate class="hover:text-orange-400">Meus anúncios</a>
+                                <a href="{{ route('messages.index') }}" wire:navigate class="hover:text-orange-400">Mensagens</a>
                             @endauth
                         </div>
                     </div>
@@ -32,11 +37,11 @@
                     <div class="flex items-center gap-4">
                         @auth
                             <a href="{{ route('listings.create') }}" wire:navigate
-                                class="inline-flex items-center px-4 py-2 bg-amber-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-700">
+                                class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
                                 Anunciar
                             </a>
                             <div class="relative" x-data="{ open: false }">
-                                <button @click="open = ! open" class="text-sm text-gray-600 hover:text-gray-900">
+                                <button @click="open = ! open" class="text-sm text-slate-300 hover:text-white">
                                     {{ auth()->user()->name }}
                                 </button>
                                 <div x-show="open" @click.outside="open = false" x-cloak
@@ -49,9 +54,9 @@
                                 </div>
                             </div>
                         @else
-                            <a href="{{ route('login') }}" wire:navigate class="text-sm text-gray-600 hover:text-gray-900">Entrar</a>
+                            <a href="{{ route('login') }}" wire:navigate class="text-sm text-slate-300 hover:text-white">Entrar</a>
                             <a href="{{ route('register') }}" wire:navigate
-                                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                                class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
                                 Cadastrar
                             </a>
                         @endauth

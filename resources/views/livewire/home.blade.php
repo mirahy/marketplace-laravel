@@ -3,7 +3,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Compre e venda o que não usa mais</h1>
         <p class="text-gray-500 mt-2">Milhares de itens usados esperando por você.</p>
         <a href="{{ route('listings.index') }}" wire:navigate
-            class="inline-block mt-4 px-6 py-2 bg-amber-600 text-white rounded-md font-semibold hover:bg-amber-700">
+            class="inline-block mt-4 px-6 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
             Ver todos os anúncios
         </a>
     </div>
@@ -12,7 +12,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-10">
         @foreach ($categories as $category)
             <a href="{{ route('categories.show', $category) }}" wire:navigate
-                class="bg-white border border-gray-100 rounded-lg p-4 text-center text-sm font-medium text-gray-700 hover:border-amber-400 hover:text-amber-600">
+                class="bg-white border border-gray-100 rounded-lg p-4 text-center text-sm font-medium text-gray-700 hover:border-orange-400 hover:text-orange-600">
                 {{ $category->name }}
             </a>
         @endforeach

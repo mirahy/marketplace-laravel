@@ -14,7 +14,7 @@
                     $lastMessage = $conversation->messages->first();
                 @endphp
                 <a href="{{ route('messages.show', $conversation) }}" wire:navigate
-                    class="block bg-white border border-gray-100 rounded-lg p-4 hover:border-amber-400">
+                    class="block bg-white border border-gray-100 rounded-lg p-4 hover:border-orange-400">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="font-medium text-gray-900">{{ $conversation->listing->title }}</p>
@@ -24,7 +24,7 @@
                             @endif
                         </div>
                         @if ($conversation->unread_count > 0)
-                            <span class="bg-amber-600 text-white text-xs rounded-full px-2 py-1">{{ $conversation->unread_count }}</span>
+                            <span class="bg-orange-600 text-white text-xs rounded-full px-2 py-1">{{ $conversation->unread_count }}</span>
                         @endif
                     </div>
                 </a>

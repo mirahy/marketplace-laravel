@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-xl font-bold text-gray-900">Meus anúncios</h1>
         <a href="{{ route('listings.create') }}" wire:navigate
-            class="px-4 py-2 bg-amber-600 text-white rounded-md font-semibold text-sm hover:bg-amber-700">
+            class="px-4 py-2 bg-orange-600 text-white rounded-md font-semibold text-sm hover:bg-orange-700">
             Novo anúncio
         </a>
     </div>

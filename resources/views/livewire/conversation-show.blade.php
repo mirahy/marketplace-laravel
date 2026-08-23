@@ -13,7 +13,7 @@
         <div class="p-4 space-y-3 max-h-96 overflow-y-auto">
             @forelse ($messages as $message)
                 <div class="{{ $message->sender_id === auth()->id() ? 'text-right' : 'text-left' }}">
-                    <span class="inline-block px-3 py-2 rounded-lg text-sm {{ $message->sender_id === auth()->id() ? 'bg-amber-600 text-white' : 'bg-gray-100 text-gray-800' }}">
+                    <span class="inline-block px-3 py-2 rounded-lg text-sm {{ $message->sender_id === auth()->id() ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-800' }}">
                         {{ $message->body }}
                     </span>
                 </div>
@@ -25,7 +25,7 @@
         <form wire:submit="send" class="p-4 border-t border-gray-100 flex gap-2">
             <input type="text" wire:model="body" placeholder="Escreva uma mensagem..."
                 class="flex-1 rounded-md border-gray-300 text-sm">
-            <button type="submit" class="px-4 py-2 bg-amber-600 text-white rounded-md font-semibold text-sm hover:bg-amber-700">
+            <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md font-semibold text-sm hover:bg-orange-700">
                 Enviar
             </button>
         </form>

@@ -90,7 +90,7 @@
         </div>
 
         <button type="submit"
-            class="w-full px-4 py-2 bg-amber-600 text-white rounded-md font-semibold hover:bg-amber-700">
+            class="w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
             {{ $listing ? 'Salvar alterações' : 'Publicar anúncio' }}
         </button>
     </form>

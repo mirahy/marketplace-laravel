@@ -23,7 +23,7 @@
         <div>
             <div class="bg-white border border-gray-100 rounded-lg p-6 sticky top-4">
                 <h1 class="text-xl font-bold text-gray-900">{{ $listing->title }}</h1>
-                <p class="text-2xl font-bold text-amber-600 mt-2">{{ Number::currency($listing->price, in: 'BRL') }}</p>
+                <p class="text-2xl font-bold text-orange-600 mt-2">{{ Number::currency($listing->price, in: 'BRL') }}</p>
                 <p class="text-sm text-gray-500 mt-1">{{ $listing->condition->getLabel() }} · {{ $listing->city }}/{{ $listing->state }}</p>
                 <p class="text-xs text-gray-400 mt-1">{{ $listing->views_count }} visualizações</p>
 
@@ -38,13 +38,13 @@
                 @auth
                     @if (auth()->id() !== $listing->user_id)
                         <button wire:click="sendMessage"
-                            class="mt-4 w-full px-4 py-2 bg-amber-600 text-white rounded-md font-semibold hover:bg-amber-700">
+                            class="mt-4 w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
                             Enviar mensagem
                         </button>
                     @endif
                 @else
                     <a href="{{ route('login') }}" wire:navigate
-                        class="mt-4 block text-center w-full px-4 py-2 bg-amber-600 text-white rounded-md font-semibold hover:bg-amber-700">
+                        class="mt-4 block text-center w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
                         Entrar para conversar
                     </a>
                 @endauth
