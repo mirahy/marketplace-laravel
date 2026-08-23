@@ -46,6 +46,9 @@
                                 </button>
                                 <div x-show="open" @click.outside="open = false" x-cloak
                                     class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-10">
+                                    @if (auth()->user()->is_admin)
+                                        <a href="/admin" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Painel Admin</a>
+                                    @endif
                                     <a href="{{ route('profile') }}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf

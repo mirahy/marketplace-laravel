@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -33,6 +34,7 @@ class UserFactory extends Factory
             'phone' => fake()->numerify('(##) 9####-####'),
             'city' => fake()->city(),
             'state' => fake()->stateAbbr(),
+            'status' => UserStatus::Aprovado,
         ];
     }
 
@@ -43,6 +45,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is still pending admin approval.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => UserStatus::Pendente,
         ]);
     }
 }

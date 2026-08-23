@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\UserStatus;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -35,6 +37,10 @@ class UserForm
                     ->maxLength(2),
                 Toggle::make('is_admin')
                     ->label('Administrador'),
+                Select::make('status')
+                    ->label('Status')
+                    ->options(UserStatus::class)
+                    ->required(),
             ]);
     }
 }

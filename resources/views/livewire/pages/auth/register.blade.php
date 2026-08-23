@@ -1,9 +1,11 @@
 <?php
 
+use App\Enums\UserStatus;
 use App\Models\User;
+use App\Notifications\NewUserRegistered;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -27,12 +29,18 @@ new #[Layout('layouts.guest')] class extends Component
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['status'] = UserStatus::Pendente;
 
         event(new Registered($user = User::create($validated)));
 
-        Auth::login($user);
+        Notification::send(
+            User::query()->where('is_admin', true)->get(),
+            new NewUserRegistered($user)
+        );
 
-        $this->redirect(route('home', absolute: false), navigate: true);
+        session()->flash('status', 'Cadastro recebido! Aguarde a aprovação de um administrador para acessar sua conta.');
+
+        $this->redirect(route('login', absolute: false), navigate: true);
     }
 }; ?>
 

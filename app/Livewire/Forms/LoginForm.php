@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Enums\UserStatus;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -35,6 +36,18 @@ class LoginForm extends Form
 
             throw ValidationException::withMessages([
                 'form.email' => trans('auth.failed'),
+            ]);
+        }
+
+        if (Auth::user()->status !== UserStatus::Aprovado) {
+            $message = Auth::user()->status === UserStatus::Rejeitado
+                ? 'Seu cadastro foi rejeitado. Entre em contato com a administração.'
+                : 'Sua conta ainda está pendente de aprovação por um administrador.';
+
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'form.email' => $message,
             ]);
         }
 

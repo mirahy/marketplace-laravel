@@ -2,7 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Enums\UserStatus;
+use App\Models\User;
+use App\Notifications\NewUserRegistered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Volt\Volt;
 use Tests\TestCase;
 
@@ -19,8 +23,12 @@ class RegistrationTest extends TestCase
             ->assertSeeVolt('pages.auth.register');
     }
 
-    public function test_new_users_can_register(): void
+    public function test_new_users_register_as_pending_and_are_not_logged_in(): void
     {
+        Notification::fake();
+
+        $admin = User::factory()->create(['is_admin' => true]);
+
         $component = Volt::test('pages.auth.register')
             ->set('name', 'Test User')
             ->set('email', 'test@example.com')
@@ -29,8 +37,13 @@ class RegistrationTest extends TestCase
 
         $component->call('register');
 
-        $component->assertRedirect(route('home', absolute: false));
+        $component->assertRedirect(route('login', absolute: false));
 
-        $this->assertAuthenticated();
+        $this->assertGuest();
+
+        $user = User::query()->where('email', 'test@example.com')->firstOrFail();
+        $this->assertSame(UserStatus::Pendente, $user->status);
+
+        Notification::assertSentTo($admin, NewUserRegistered::class);
     }
 }
