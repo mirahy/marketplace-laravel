@@ -5,13 +5,30 @@
 <div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-2">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                @forelse ($listing->images as $image)
-                    <img src="{{ Str::startsWith($image->path, 'http') ? $image->path : Storage::url($image->path) }}"
-                        class="w-full h-64 object-cover rounded-lg bg-gray-100" alt="{{ $listing->title }}">
+            @php $imageCount = $listing->images->count(); @endphp
+            <div x-data="{ active: 0, total: {{ $imageCount }} }" class="relative w-full h-64 sm:h-96 rounded-lg bg-gray-100 overflow-hidden">
+                @forelse ($listing->images as $i => $image)
+                    <img x-show="active === {{ $i }}" x-cloak
+                        src="{{ Str::startsWith($image->path, 'http') ? $image->path : Storage::url($image->path) }}"
+                        class="absolute inset-0 w-full h-full object-cover" alt="{{ $listing->title }}">
                 @empty
-                    <div class="w-full h-64 rounded-lg bg-gray-100"></div>
+                    <div class="absolute inset-0"></div>
                 @endforelse
+
+                @if ($imageCount > 1)
+                    <button type="button" @click="active = (active - 1 + total) % total"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <button type="button" @click="active = (active + 1) % total"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                @endif
             </div>
 
             <div class="mt-6 bg-white border border-gray-100 rounded-lg p-6">
@@ -54,10 +71,29 @@
 
     @if ($related->isNotEmpty())
         <h2 class="text-lg font-semibold text-gray-900 mt-10 mb-3">Você também pode gostar</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            @foreach ($related as $item)
-                <x-listing-card :listing="$item" />
-            @endforeach
+        <div class="relative" x-data>
+            <div x-ref="relatedTrack" class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide">
+                @foreach ($related as $item)
+                    <div class="w-40 sm:w-52 shrink-0 snap-start">
+                        <x-listing-card :listing="$item" />
+                    </div>
+                @endforeach
+            </div>
+
+            @if ($related->count() > 2)
+                <button type="button" @click="$refs.relatedTrack.scrollBy({ left: -300, behavior: 'smooth' })"
+                    class="absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border border-gray-100 shadow-md flex items-center justify-center hover:bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button type="button" @click="$refs.relatedTrack.scrollBy({ left: 300, behavior: 'smooth' })"
+                    class="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border border-gray-100 shadow-md flex items-center justify-center hover:bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            @endif
         </div>
     @endif
 </div>
