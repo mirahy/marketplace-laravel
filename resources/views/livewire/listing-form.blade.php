@@ -19,7 +19,7 @@
 
         <div>
             <label class="text-sm font-medium text-gray-700">Categoria</label>
-            <x-searchable-select wire:model="categoryId" :options="$categoryOptions" :selected="$categoryId" placeholder="Selecione" />
+            <x-searchable-select wire:model="categoryId" wire:key="category-select-{{ $categoryOptions->count() }}" :options="$categoryOptions" :selected="$categoryId" placeholder="Selecione" />
             @error('categoryId') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
 
             @if (! $showNewCategoryForm)
@@ -69,14 +69,14 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="text-sm font-medium text-gray-700">Cidade</label>
-                <input type="text" wire:model="city" class="mt-1 w-full rounded-md border-gray-300">
-                @error('city') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                <label class="text-sm font-medium text-gray-700">UF</label>
+                <x-searchable-select wire:model.live="state" :options="$stateOptions" :selected="$state" placeholder="Selecione" />
+                @error('state') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="text-sm font-medium text-gray-700">UF</label>
-                <x-searchable-select wire:model="state" :options="$stateOptions" :selected="$state" placeholder="Selecione" />
-                @error('state') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                <label class="text-sm font-medium text-gray-700">Cidade</label>
+                <x-searchable-select wire:model="city" wire:key="city-select-{{ $state }}" :options="$cityOptions" :selected="$city" :placeholder="$state ? 'Selecione' : 'Selecione a UF primeiro'" />
+                @error('city') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 

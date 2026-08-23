@@ -1,21 +1,29 @@
 @props(['options' => [], 'selected' => null, 'placeholder' => 'Selecione'])
 
-<div class="relative" x-data="{
+@php
+    $wireKey = $attributes->get('wire:key');
+    $selectAttributes = $attributes->except('wire:key');
+@endphp
+
+<div class="relative" @if ($wireKey) wire:key="{{ $wireKey }}" @endif x-data="{
         open: false,
         query: '',
-        label: '{{ addslashes($placeholder) }}',
+        label: '',
         init() {
             this.syncLabel();
         },
         norm(text) {
             return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
         },
+        placeholderText() {
+            return Array.from(this.$refs.select.options).find(o => o.value === '')?.text ?? '';
+        },
         filteredOptions() {
             return Array.from($refs.select.options).filter(o => o.value !== '' && this.norm(o.text).includes(this.norm(this.query)));
         },
         syncLabel() {
             const opt = this.$refs.select.selectedOptions[0];
-            this.label = (opt && opt.value !== '') ? opt.text : '{{ addslashes($placeholder) }}';
+            this.label = (opt && opt.value !== '') ? opt.text : this.placeholderText();
         },
         choose(value) {
             this.$refs.select.value = value;
@@ -28,7 +36,7 @@
     @click.outside="open = false"
     @keydown.escape.window="open = false"
 >
-    <select x-ref="select" {{ $attributes }} class="hidden">
+    <select x-ref="select" {{ $selectAttributes }} class="hidden">
         <option value="">{{ $placeholder }}</option>
         @foreach ($options as $value => $optionLabel)
             <option value="{{ $value }}" @selected((string) $value === (string) $selected)>{{ $optionLabel }}</option>
@@ -37,7 +45,7 @@
 
     <button type="button" @click="open = ! open"
         class="mt-1 w-full flex items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-left">
-        <span x-text="label" :class="{ 'text-gray-400': label === '{{ addslashes($placeholder) }}' }"></span>
+        <span x-text="label" :class="{ 'text-gray-400': $refs.select.value === '' }"></span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
         </svg>

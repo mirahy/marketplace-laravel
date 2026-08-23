@@ -84,6 +84,37 @@ class MarketplaceFlowTest extends TestCase
             ->assertHasErrors(['state']);
     }
 
+    public function test_listing_form_rejects_a_city_that_does_not_belong_to_the_selected_state(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(ListingForm::class)
+            ->set('title', 'Sofá')
+            ->set('description', 'Em bom estado.')
+            ->set('price', 100)
+            ->set('condition', 'usado')
+            ->set('categoryId', $category->id)
+            ->set('state', 'PR')
+            ->set('city', 'Rio de Janeiro')
+            ->call('save')
+            ->assertHasErrors(['city']);
+    }
+
+    public function test_changing_the_state_clears_a_city_that_no_longer_belongs_to_it(): void
+    {
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(ListingForm::class)
+            ->set('state', 'PR')
+            ->set('city', 'Curitiba')
+            ->assertSet('city', 'Curitiba')
+            ->set('state', 'SP')
+            ->assertSet('city', '');
+    }
+
     public function test_create_and_edit_listing_routes_are_reachable_over_http(): void
     {
         // Regression test: /anuncios/novo and /anuncios/{slug}/editar must not be

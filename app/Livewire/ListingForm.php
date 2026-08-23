@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Listing;
 use App\Models\User;
 use App\Notifications\NewCategoryRequested;
+use App\Support\BrazilianCities;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -67,6 +68,13 @@ class ListingForm extends Component
         }
     }
 
+    public function updatedState(): void
+    {
+        if (! in_array($this->city, BrazilianCities::forState($this->state), true)) {
+            $this->city = '';
+        }
+    }
+
     public function createCategory(): void
     {
         $data = $this->validate([
@@ -118,8 +126,8 @@ class ListingForm extends Component
             'price' => ['required', 'numeric', 'min:0'],
             'condition' => ['required', 'in:novo,usado'],
             'categoryId' => ['required', 'exists:categories,id'],
-            'city' => ['required', 'string', 'max:255'],
             'state' => ['required', Rule::enum(BrazilianState::class)],
+            'city' => ['required', Rule::in(BrazilianCities::forState($this->state))],
             'newPhotos.*' => ['nullable', 'image', 'max:4096'],
         ]);
 
@@ -178,9 +186,18 @@ class ListingForm extends Component
             $state->value => $state->value.' - '.$state->getLabel(),
         ]);
 
+        $cities = BrazilianCities::forState($this->state);
+
+        if ($this->city && ! in_array($this->city, $cities, true)) {
+            $cities[] = $this->city;
+        }
+
+        $cityOptions = collect($cities)->mapWithKeys(fn ($city) => [$city => $city]);
+
         return view('livewire.listing-form', [
             'categoryOptions' => $categoryOptions,
             'stateOptions' => $stateOptions,
+            'cityOptions' => $cityOptions,
             'conditions' => ListingCondition::cases(),
         ]);
     }
