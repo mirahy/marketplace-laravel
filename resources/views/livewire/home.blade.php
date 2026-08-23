@@ -1,7 +1,7 @@
 <div>
     <div class="bg-white rounded-lg p-8 mb-8 text-center border border-gray-100">
-        <h1 class="text-3xl font-bold text-gray-900">Compre e venda o que não usa mais</h1>
-        <p class="text-gray-500 mt-2">Milhares de itens usados esperando por você.</p>
+        <h1 class="text-3xl font-bold text-gray-900">Doações que viram ajuda</h1>
+        <p class="text-gray-500 mt-2">Itens usados doados pela comunidade, à venda para apoiar a obra da ADBN.</p>
         <a href="{{ route('listings.index') }}" wire:navigate
             class="inline-block mt-4 px-6 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
             Ver todos os anúncios
