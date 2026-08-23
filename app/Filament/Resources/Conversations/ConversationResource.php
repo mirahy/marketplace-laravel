@@ -13,6 +13,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ConversationResource extends Resource
 {
@@ -57,8 +59,11 @@ class ConversationResource extends Resource
         return false;
     }
 
-    public static function canDelete($record): bool
+    public static function getRecordRouteBindingEloquentQuery(): Builder
     {
-        return false;
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }
