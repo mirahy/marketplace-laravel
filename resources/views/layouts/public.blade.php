@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-gray-50">
-        <nav class="bg-[#0b1440] border-b border-white/10">
+        <nav class="bg-[#0b1440] border-b border-white/10" x-data="{ mobileMenuOpen: false }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center gap-8">
@@ -35,6 +35,14 @@
                     </div>
 
                     <div class="flex items-center gap-4">
+                        <button type="button" @click="mobileMenuOpen = ! mobileMenuOpen"
+                            class="sm:hidden text-slate-300 hover:text-white">
+                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path :class="{'hidden': mobileMenuOpen, 'inline-flex': ! mobileMenuOpen }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                <path :class="{'hidden': ! mobileMenuOpen, 'inline-flex': mobileMenuOpen }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
                         @auth
                             <a href="{{ route('listings.create') }}" wire:navigate
                                 class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
@@ -65,6 +73,24 @@
                             </a>
                         @endauth
                     </div>
+                </div>
+
+                <div x-show="mobileMenuOpen" x-cloak @click.outside="mobileMenuOpen = false"
+                    class="sm:hidden pb-4 space-y-1">
+                    <a href="{{ route('listings.index') }}" wire:navigate @click="mobileMenuOpen = false"
+                        class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
+                        Anúncios
+                    </a>
+                    @auth
+                        <a href="{{ route('listings.mine') }}" wire:navigate @click="mobileMenuOpen = false"
+                            class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
+                            Meus anúncios
+                        </a>
+                        <a href="{{ route('messages.index') }}" wire:navigate @click="mobileMenuOpen = false"
+                            class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
+                            Mensagens
+                        </a>
+                    @endauth
                 </div>
             </div>
         </nav>

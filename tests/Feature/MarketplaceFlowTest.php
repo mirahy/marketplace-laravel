@@ -112,7 +112,77 @@ class MarketplaceFlowTest extends TestCase
             ->set('city', 'Curitiba')
             ->assertSet('city', 'Curitiba')
             ->set('state', 'SP')
-            ->assertSet('city', '');
+            ->assertSet('city', null);
+    }
+
+    public function test_listing_can_be_created_without_city_state_or_address_fields(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(ListingForm::class)
+            ->set('title', 'Mesa de escritório')
+            ->set('description', 'Em bom estado.')
+            ->set('price', 150)
+            ->set('condition', 'usado')
+            ->set('categoryId', $category->id)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertRedirect(route('listings.mine'));
+
+        $listing = Listing::query()->where('title', 'Mesa de escritório')->firstOrFail();
+
+        $this->assertSame('', $listing->city);
+        $this->assertSame('', $listing->state);
+        $this->assertNull($listing->address_type);
+        $this->assertNull($listing->address_street);
+    }
+
+    public function test_listing_can_be_created_with_address_fields(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(ListingForm::class)
+            ->set('title', 'Sofá com endereço')
+            ->set('description', 'Em bom estado.')
+            ->set('price', 150)
+            ->set('condition', 'usado')
+            ->set('categoryId', $category->id)
+            ->set('addressType', 'avenida')
+            ->set('addressStreet', 'Brasil')
+            ->set('addressNumber', '123')
+            ->set('addressNeighborhood', 'Centro')
+            ->set('addressComplement', 'Apto 4')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $listing = Listing::query()->where('title', 'Sofá com endereço')->firstOrFail();
+
+        $this->assertSame(\App\Enums\AddressType::Avenida, $listing->address_type);
+        $this->assertSame('Brasil', $listing->address_street);
+        $this->assertSame('123', $listing->address_number);
+        $this->assertSame('Centro', $listing->address_neighborhood);
+        $this->assertSame('Apto 4', $listing->address_complement);
+    }
+
+    public function test_listing_form_rejects_an_invalid_address_type(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        Livewire::actingAs($user)
+            ->test(ListingForm::class)
+            ->set('title', 'Sofá')
+            ->set('description', 'Em bom estado.')
+            ->set('price', 150)
+            ->set('condition', 'usado')
+            ->set('categoryId', $category->id)
+            ->set('addressType', 'castelo')
+            ->call('save')
+            ->assertHasErrors(['addressType']);
     }
 
     public function test_create_and_edit_listing_routes_are_reachable_over_http(): void

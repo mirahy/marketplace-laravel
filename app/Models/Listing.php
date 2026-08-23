@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AddressType;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Notifications\ListingStatusUpdated;
@@ -21,6 +22,8 @@ class Listing extends Model
     protected $fillable = [
         'category_id', 'title', 'description', 'price', 'condition',
         'status', 'city', 'state', 'is_featured', 'published_at',
+        'address_type', 'address_street', 'address_number',
+        'address_neighborhood', 'address_complement',
     ];
 
     protected function casts(): array
@@ -31,6 +34,7 @@ class Listing extends Model
             'status' => ListingStatus::class,
             'is_featured' => 'boolean',
             'published_at' => 'datetime',
+            'address_type' => AddressType::class,
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\AddressType;
 use App\Enums\BrazilianState;
 use App\Enums\CategoryStatus;
 use App\Enums\ListingCondition;
@@ -41,9 +42,19 @@ class ListingForm extends Component
 
     public string $newCategoryName = '';
 
-    public string $city = '';
+    public ?string $city = null;
 
-    public string $state = '';
+    public ?string $state = null;
+
+    public ?string $addressType = null;
+
+    public ?string $addressStreet = null;
+
+    public ?string $addressNumber = null;
+
+    public ?string $addressNeighborhood = null;
+
+    public ?string $addressComplement = null;
 
     /** @var array<int, mixed> */
     public array $newPhotos = [];
@@ -62,8 +73,13 @@ class ListingForm extends Component
             $this->price = (float) $listing->price;
             $this->condition = $listing->condition->value;
             $this->categoryId = $listing->category_id;
-            $this->city = $listing->city;
-            $this->state = $listing->state;
+            $this->city = $listing->city ?: null;
+            $this->state = $listing->state ?: null;
+            $this->addressType = $listing->address_type?->value;
+            $this->addressStreet = $listing->address_street;
+            $this->addressNumber = $listing->address_number;
+            $this->addressNeighborhood = $listing->address_neighborhood;
+            $this->addressComplement = $listing->address_complement;
             $this->existingImages = $listing->images()->orderBy('order')->get()->all();
         }
     }
@@ -71,7 +87,7 @@ class ListingForm extends Component
     public function updatedState(): void
     {
         if (! in_array($this->city, BrazilianCities::forState($this->state), true)) {
-            $this->city = '';
+            $this->city = null;
         }
     }
 
@@ -126,8 +142,13 @@ class ListingForm extends Component
             'price' => ['required', 'numeric', 'min:0'],
             'condition' => ['required', 'in:novo,usado'],
             'categoryId' => ['required', 'exists:categories,id'],
-            'state' => ['required', Rule::enum(BrazilianState::class)],
-            'city' => ['required', Rule::in(BrazilianCities::forState($this->state))],
+            'state' => ['nullable', Rule::enum(BrazilianState::class)],
+            'city' => ['nullable', Rule::in(BrazilianCities::forState($this->state))],
+            'addressType' => ['nullable', Rule::enum(AddressType::class)],
+            'addressStreet' => ['nullable', 'string', 'max:255'],
+            'addressNumber' => ['nullable', 'string', 'max:20'],
+            'addressNeighborhood' => ['nullable', 'string', 'max:255'],
+            'addressComplement' => ['nullable', 'string', 'max:255'],
             'newPhotos.*' => ['nullable', 'image', 'max:4096'],
         ]);
 
@@ -137,8 +158,13 @@ class ListingForm extends Component
             'price' => $data['price'],
             'condition' => $data['condition'],
             'category_id' => $data['categoryId'],
-            'city' => $data['city'],
-            'state' => strtoupper($data['state']),
+            'city' => $data['city'] ?? '',
+            'state' => $data['state'] ? strtoupper($data['state']) : '',
+            'address_type' => $data['addressType'],
+            'address_street' => $data['addressStreet'],
+            'address_number' => $data['addressNumber'],
+            'address_neighborhood' => $data['addressNeighborhood'],
+            'address_complement' => $data['addressComplement'],
         ];
 
         if ($this->listing) {
@@ -199,6 +225,7 @@ class ListingForm extends Component
             'stateOptions' => $stateOptions,
             'cityOptions' => $cityOptions,
             'conditions' => ListingCondition::cases(),
+            'addressTypes' => AddressType::cases(),
         ]);
     }
 }

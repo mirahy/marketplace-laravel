@@ -10,15 +10,17 @@
         <div class="mb-4 p-3 bg-green-50 text-green-700 rounded-md text-sm">{{ session('status') }}</div>
     @endif
 
+    <p class="text-xs text-gray-500 mb-4"><span class="text-red-500">*</span> Campos obrigatórios. Os demais campos são opcionais.</p>
+
     <form wire:submit="save" class="space-y-4">
         <div>
-            <label class="text-sm font-medium text-gray-700">Título</label>
+            <label class="text-sm font-medium text-gray-700">Título <span class="text-red-500">*</span></label>
             <input type="text" wire:model="title" class="mt-1 w-full rounded-md border-gray-300">
             @error('title') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="text-sm font-medium text-gray-700">Categoria</label>
+            <label class="text-sm font-medium text-gray-700">Categoria <span class="text-red-500">*</span></label>
             <x-searchable-select wire:model="categoryId" wire:key="category-select-{{ $categoryOptions->count() }}" :options="$categoryOptions" :selected="$categoryId" placeholder="Selecione" />
             @error('categoryId') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
 
@@ -46,19 +48,19 @@
         </div>
 
         <div>
-            <label class="text-sm font-medium text-gray-700">Descrição</label>
+            <label class="text-sm font-medium text-gray-700">Descrição <span class="text-red-500">*</span></label>
             <textarea wire:model="description" rows="4" class="mt-1 w-full rounded-md border-gray-300"></textarea>
             @error('description') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="text-sm font-medium text-gray-700">Preço (R$)</label>
+                <label class="text-sm font-medium text-gray-700">Preço (R$) <span class="text-red-500">*</span></label>
                 <input type="number" step="0.01" wire:model="price" class="mt-1 w-full rounded-md border-gray-300">
                 @error('price') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="text-sm font-medium text-gray-700">Condição</label>
+                <label class="text-sm font-medium text-gray-700">Condição <span class="text-red-500">*</span></label>
                 <select wire:model="condition" class="mt-1 w-full rounded-md border-gray-300">
                     @foreach ($conditions as $c)
                         <option value="{{ $c->value }}">{{ $c->getLabel() }}</option>
@@ -69,14 +71,57 @@
 
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="text-sm font-medium text-gray-700">UF</label>
+                <label class="text-sm font-medium text-gray-700">UF <span class="text-gray-400 font-normal">(opcional)</span></label>
                 <x-searchable-select wire:model.live="state" :options="$stateOptions" :selected="$state" placeholder="Selecione" />
                 @error('state') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="text-sm font-medium text-gray-700">Cidade</label>
+                <label class="text-sm font-medium text-gray-700">Cidade <span class="text-gray-400 font-normal">(opcional)</span></label>
                 <x-searchable-select wire:model="city" wire:key="city-select-{{ $state }}" :options="$cityOptions" :selected="$city" :placeholder="$state ? 'Selecione' : 'Selecione a UF primeiro'" />
                 @error('city') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
+        <div class="border-t border-gray-100 pt-4">
+            <p class="text-sm font-medium text-gray-800 mb-3">Endereço <span class="text-gray-400 font-normal">(opcional)</span></p>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Tipo de logradouro</label>
+                    <select wire:model="addressType" class="mt-1 w-full rounded-md border-gray-300">
+                        <option value="">Selecione</option>
+                        @foreach ($addressTypes as $type)
+                            <option value="{{ $type->value }}">{{ $type->getLabel() }}</option>
+                        @endforeach
+                    </select>
+                    @error('addressType') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Logradouro</label>
+                    <input type="text" wire:model="addressStreet" placeholder="Nome da rua"
+                        class="mt-1 w-full rounded-md border-gray-300">
+                    @error('addressStreet') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Número</label>
+                    <input type="text" wire:model="addressNumber" class="mt-1 w-full rounded-md border-gray-300">
+                    @error('addressNumber') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Bairro</label>
+                    <input type="text" wire:model="addressNeighborhood" class="mt-1 w-full rounded-md border-gray-300">
+                    @error('addressNeighborhood') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="text-sm font-medium text-gray-700">Complemento</label>
+                <input type="text" wire:model="addressComplement" placeholder="Apto, bloco, ponto de referência..."
+                    class="mt-1 w-full rounded-md border-gray-300">
+                @error('addressComplement') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
