@@ -48,7 +48,7 @@
 
                 <p class="text-sm font-medium text-gray-800">Vendedor</p>
                 <p class="text-sm text-gray-600">{{ $listing->user->name }}</p>
-                @if ($listing->user->phone)
+                @if ($listing->user->phone && $listing->user->show_phone)
                     <p class="text-sm text-gray-600">{{ $listing->user->phone }}</p>
                 @endif
 

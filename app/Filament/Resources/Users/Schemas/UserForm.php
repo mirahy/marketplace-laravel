@@ -30,6 +30,8 @@ class UserForm
                 TextInput::make('phone')
                     ->tel()
                     ->maxLength(20),
+                Toggle::make('show_phone')
+                    ->label('Exibir telefone nos anúncios'),
                 TextInput::make('city')
                     ->maxLength(255),
                 TextInput::make('state')

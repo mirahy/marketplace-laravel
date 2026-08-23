@@ -10,6 +10,8 @@ new class extends Component
 {
     public string $name = '';
     public string $email = '';
+    public string $phone = '';
+    public bool $show_phone = true;
 
     /**
      * Mount the component.
@@ -18,6 +20,8 @@ new class extends Component
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->phone = Auth::user()->phone ?? '';
+        $this->show_phone = Auth::user()->show_phone ?? true;
     }
 
     /**
@@ -30,6 +34,8 @@ new class extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'show_phone' => ['boolean'],
         ]);
 
         $user->fill($validated);
@@ -102,6 +108,18 @@ new class extends Component
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="phone" :value="__('Telefone')" />
+            <x-text-input wire:model="phone" id="phone" name="phone" type="text" class="mt-1 block w-full" autocomplete="tel" placeholder="(00) 90000-0000" />
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+
+            <label for="show_phone" class="mt-3 flex items-center gap-2">
+                <input wire:model="show_phone" id="show_phone" name="show_phone" type="checkbox"
+                    class="rounded border-gray-300 text-orange-600 shadow-sm focus:ring-orange-500">
+                <span class="text-sm text-gray-600">{{ __('Exibir meu telefone nos meus anúncios') }}</span>
+            </label>
         </div>
 
         <div class="flex items-center gap-4">
