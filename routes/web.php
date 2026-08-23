@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Home::class)->name('home');
 Route::get('/anuncios', ListingIndex::class)->name('listings.index');
 Route::get('/categorias/{category:slug}', ListingIndex::class)->name('categories.show');
-Route::get('/anuncios/{listing:slug}', ListingShow::class)->name('listings.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/meus-anuncios', MyListings::class)->name('listings.mine');
@@ -22,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/mensagens', Inbox::class)->name('messages.index');
     Route::get('/mensagens/{conversation}', ConversationShow::class)->name('messages.show');
 });
+
+Route::get('/anuncios/{listing:slug}', ListingShow::class)->name('listings.show');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

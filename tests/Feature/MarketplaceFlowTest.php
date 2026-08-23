@@ -64,6 +64,22 @@ class MarketplaceFlowTest extends TestCase
         $this->get('/anuncios')->assertOk()->assertSee('Bicicleta aro 29');
     }
 
+    public function test_create_and_edit_listing_routes_are_reachable_over_http(): void
+    {
+        // Regression test: /anuncios/novo and /anuncios/{slug}/editar must not be
+        // shadowed by the /anuncios/{listing:slug} wildcard route.
+        $user = User::factory()->create();
+        $listing = Listing::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)->get('/anuncios/novo')->assertOk();
+        $this->actingAs($user)->get("/anuncios/{$listing->slug}/editar")->assertOk();
+    }
+
+    public function test_create_listing_route_requires_authentication(): void
+    {
+        $this->get('/anuncios/novo')->assertRedirect(route('login'));
+    }
+
     public function test_only_the_owner_can_edit_or_delete_their_listing(): void
     {
         $owner = User::factory()->create();
