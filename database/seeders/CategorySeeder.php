@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CategoryStatus;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -30,6 +31,7 @@ class CategorySeeder extends Seeder
                 'icon' => $category['icon'],
                 'order' => $index,
                 'is_active' => true,
+                'status' => CategoryStatus::Aprovado,
             ]);
         }
     }

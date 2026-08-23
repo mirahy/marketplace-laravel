@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
+use App\Enums\CategoryStatus;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Set;
@@ -35,6 +37,11 @@ class CategoryForm
                 Toggle::make('is_active')
                     ->label('Ativa')
                     ->default(true),
+                Select::make('status')
+                    ->label('Status')
+                    ->options(CategoryStatus::class)
+                    ->default(CategoryStatus::Aprovado)
+                    ->required(),
             ]);
     }
 }

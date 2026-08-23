@@ -40,6 +40,8 @@ class ListingIndex extends Component
     public function mount(?Category $category = null): void
     {
         if ($category) {
+            abort_unless($category->is_active, 404);
+
             $this->categoryId = $category->id;
         }
     }

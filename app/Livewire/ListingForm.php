@@ -2,11 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Enums\CategoryStatus;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Models\Category;
 use App\Models\Listing;
+use App\Models\User;
+use App\Notifications\NewCategoryRequested;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -29,6 +33,10 @@ class ListingForm extends Component
     public string $condition = 'usado';
 
     public ?int $categoryId = null;
+
+    public bool $showNewCategoryForm = false;
+
+    public string $newCategoryName = '';
 
     public string $city = '';
 
@@ -55,6 +63,29 @@ class ListingForm extends Component
             $this->state = $listing->state;
             $this->existingImages = $listing->images()->orderBy('order')->get()->all();
         }
+    }
+
+    public function createCategory(): void
+    {
+        $data = $this->validate([
+            'newCategoryName' => ['required', 'string', 'max:255'],
+        ]);
+
+        $category = Category::create([
+            'name' => $data['newCategoryName'],
+            'slug' => Str::slug($data['newCategoryName']).'-'.Str::random(6),
+            'is_active' => false,
+            'status' => CategoryStatus::Pendente,
+            'created_by' => Auth::id(),
+        ]);
+
+        Notification::send(User::where('is_admin', true)->get(), new NewCategoryRequested($category));
+
+        $this->categoryId = $category->id;
+        $this->newCategoryName = '';
+        $this->showNewCategoryForm = false;
+
+        session()->flash('status', 'Categoria enviada para aprovação e já selecionada neste anúncio.');
     }
 
     public function removeExistingImage(int $imageId): void
@@ -127,8 +158,18 @@ class ListingForm extends Component
 
     public function render()
     {
+        $categories = Category::query()->where('is_active', true)->orderBy('order')->get();
+
+        if ($this->categoryId && ! $categories->contains('id', $this->categoryId)) {
+            $selected = Category::find($this->categoryId);
+
+            if ($selected) {
+                $categories->push($selected);
+            }
+        }
+
         return view('livewire.listing-form', [
-            'categories' => Category::query()->where('is_active', true)->orderBy('order')->get(),
+            'categories' => $categories,
             'conditions' => ListingCondition::cases(),
         ]);
     }

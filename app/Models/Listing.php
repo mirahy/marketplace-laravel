@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
+use App\Notifications\ListingStatusUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class Listing extends Model
@@ -58,5 +60,17 @@ class Listing extends Model
     public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class);
+    }
+
+    public function approve(): void
+    {
+        $this->update(['status' => ListingStatus::Ativo, 'published_at' => now()]);
+        Notification::send($this->user, new ListingStatusUpdated($this));
+    }
+
+    public function reject(): void
+    {
+        $this->update(['status' => ListingStatus::Rejeitado]);
+        Notification::send($this->user, new ListingStatusUpdated($this));
     }
 }

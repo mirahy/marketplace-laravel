@@ -51,13 +51,13 @@ class UsersTable
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn ($record) => $record->status === UserStatus::Pendente)
-                    ->action(fn ($record) => $record->update(['status' => UserStatus::Aprovado])),
+                    ->action(fn ($record) => $record->approve()),
                 Action::make('reject')
                     ->label('Rejeitar')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->visible(fn ($record) => $record->status === UserStatus::Pendente)
-                    ->action(fn ($record) => $record->update(['status' => UserStatus::Rejeitado])),
+                    ->action(fn ($record) => $record->reject()),
                 EditAction::make(),
             ])
             ->toolbarActions([

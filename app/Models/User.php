@@ -56,4 +56,14 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Conversation::class, 'seller_id');
     }
+
+    public function approve(): void
+    {
+        $this->update(['status' => UserStatus::Aprovado]);
+    }
+
+    public function reject(): void
+    {
+        $this->update(['status' => UserStatus::Rejeitado]);
+    }
 }

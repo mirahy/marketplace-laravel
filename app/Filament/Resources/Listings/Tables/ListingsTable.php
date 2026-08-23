@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Listings\Tables;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Models\Category;
-use App\Notifications\ListingStatusUpdated;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -21,7 +20,6 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Notification;
 
 class ListingsTable
 {
@@ -92,19 +90,13 @@ class ListingsTable
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn ($record) => $record->status === ListingStatus::EmAnalise)
-                    ->action(function ($record) {
-                        $record->update(['status' => ListingStatus::Ativo, 'published_at' => now()]);
-                        Notification::send($record->user, new ListingStatusUpdated($record));
-                    }),
+                    ->action(fn ($record) => $record->approve()),
                 Action::make('reject')
                     ->label('Rejeitar')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->visible(fn ($record) => $record->status === ListingStatus::EmAnalise)
-                    ->action(function ($record) {
-                        $record->update(['status' => ListingStatus::Rejeitado]);
-                        Notification::send($record->user, new ListingStatusUpdated($record));
-                    }),
+                    ->action(fn ($record) => $record->reject()),
                 Action::make('toggleFeatured')
                     ->label(fn ($record) => $record->is_featured ? 'Remover destaque' : 'Destacar')
                     ->icon('heroicon-o-star')

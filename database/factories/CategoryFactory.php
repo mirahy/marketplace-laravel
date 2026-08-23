@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CategoryStatus;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -21,6 +22,7 @@ class CategoryFactory extends Factory
             'icon' => 'heroicon-o-tag',
             'order' => 0,
             'is_active' => true,
+            'status' => CategoryStatus::Aprovado,
         ];
     }
 }
