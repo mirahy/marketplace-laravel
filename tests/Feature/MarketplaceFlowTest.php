@@ -10,8 +10,10 @@ use App\Models\User;
 use App\Livewire\ConversationShow;
 use App\Livewire\ListingForm;
 use App\Livewire\ListingShow;
+use App\Notifications\NewMessageReceived;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -103,6 +105,8 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_buyer_and_seller_can_message_each_other_and_strangers_are_blocked(): void
     {
+        Notification::fake();
+
         $seller = User::factory()->create();
         $buyer = User::factory()->create();
         $stranger = User::factory()->create();
@@ -126,6 +130,10 @@ class MarketplaceFlowTest extends TestCase
             'sender_id' => $seller->id,
             'body' => 'Ainda está disponível?',
         ]);
+
+        // The seller sent the message, so the buyer is the one notified by e-mail.
+        Notification::assertSentTo($buyer, NewMessageReceived::class);
+        Notification::assertNotSentTo($seller, NewMessageReceived::class);
 
         $this->actingAs($stranger)
             ->get("/mensagens/{$conversation->id}")

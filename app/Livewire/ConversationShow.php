@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Conversation;
+use App\Notifications\NewMessageReceived;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -32,12 +34,19 @@ class ConversationShow extends Component
             'body' => ['required', 'string', 'max:2000'],
         ]);
 
-        $this->conversation->messages()->create([
+        $message = $this->conversation->messages()->create([
             'sender_id' => Auth::id(),
             'body' => $this->body,
         ]);
 
         $this->conversation->touch();
+
+        $recipient = $message->sender_id === $this->conversation->buyer_id
+            ? $this->conversation->seller
+            : $this->conversation->buyer;
+
+        Notification::send($recipient, new NewMessageReceived($message, $this->conversation));
+
         $this->body = '';
     }
 
