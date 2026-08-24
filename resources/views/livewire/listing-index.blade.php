@@ -1,6 +1,14 @@
-<div>
+<div x-data="{ showFilters: false }">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <aside class="bg-white border border-gray-100 rounded-lg p-4 h-fit space-y-4">
+        <button type="button" @click="showFilters = ! showFilters"
+            class="md:hidden flex items-center justify-between bg-white border border-gray-100 rounded-lg px-4 py-3 text-sm font-semibold text-gray-800">
+            <span>Filtros</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform" :class="{ 'rotate-180': showFilters }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+        </button>
+
+        <aside :class="{ 'hidden': ! showFilters }" class="md:block bg-white border border-gray-100 rounded-lg p-4 h-fit space-y-4">
             <div>
                 <label class="text-xs font-semibold text-gray-500 uppercase">Busca</label>
                 <input type="text" wire:model.live.debounce.300ms="search" placeholder="O que você procura?"
