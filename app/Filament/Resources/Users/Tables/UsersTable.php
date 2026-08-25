@@ -36,6 +36,15 @@ class UsersTable
                 IconColumn::make('is_admin')
                     ->label('Admin')
                     ->boolean(),
+                TextColumn::make('roles.name')
+                    ->label('Papel')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'anunciante' => 'Anunciante',
+                        'usuario' => 'Usuário',
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => $state === 'anunciante' ? 'success' : 'gray'),
                 TextColumn::make('listings_count')
                     ->counts('listings')
                     ->label('Anúncios'),
@@ -47,6 +56,9 @@ class UsersTable
                 SelectFilter::make('status')
                     ->options(UserStatus::class),
                 TernaryFilter::make('is_admin'),
+                SelectFilter::make('roles')
+                    ->label('Papel')
+                    ->relationship('roles', 'name'),
                 TrashedFilter::make(),
             ])
             ->recordActions([

@@ -81,6 +81,8 @@ class ListingForm extends Component
             $this->addressNeighborhood = $listing->address_neighborhood;
             $this->addressComplement = $listing->address_complement;
             $this->existingImages = $listing->images()->orderBy('order')->get()->all();
+        } else {
+            $this->authorize('create', Listing::class);
         }
     }
 

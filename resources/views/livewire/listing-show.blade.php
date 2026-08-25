@@ -58,9 +58,11 @@
                 <p class="text-sm font-medium text-gray-800">Vendedor</p>
                 @if ($listing->user)
                     <p class="text-sm text-gray-600">{{ $listing->user->name }}</p>
-                    @if ($listing->user->phone && $listing->user->show_phone)
-                        <p class="text-sm text-gray-600">{{ $listing->user->phone }}</p>
-                    @endif
+                    @auth
+                        @if ($listing->user->phone && $listing->user->show_phone)
+                            <p class="text-sm text-gray-600">{{ $listing->user->phone }}</p>
+                        @endif
+                    @endauth
                 @else
                     <p class="text-sm text-gray-400">Vendedor indisponível</p>
                 @endif

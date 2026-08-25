@@ -33,6 +33,8 @@ new #[Layout('layouts.guest')] class extends Component
 
         event(new Registered($user = User::create($validated)));
 
+        $user->assignRole('usuario');
+
         Notification::send(
             User::query()->where('is_admin', true)->get(),
             new NewUserRegistered($user)

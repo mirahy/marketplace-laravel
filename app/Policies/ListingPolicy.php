@@ -24,7 +24,7 @@ class ListingPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('create listings');
     }
 
     public function update(User $user, Listing $listing): bool

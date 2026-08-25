@@ -35,7 +35,7 @@ class MarketplaceFlowTest extends TestCase
     {
         Storage::fake('public');
 
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $category = Category::factory()->create();
 
         Livewire::actingAs($user)
@@ -68,7 +68,7 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_listing_form_rejects_an_invalid_state_code(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $category = Category::factory()->create();
 
         Livewire::actingAs($user)
@@ -86,7 +86,7 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_listing_form_rejects_a_city_that_does_not_belong_to_the_selected_state(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $category = Category::factory()->create();
 
         Livewire::actingAs($user)
@@ -104,7 +104,7 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_changing_the_state_clears_a_city_that_no_longer_belongs_to_it(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
 
         Livewire::actingAs($user)
             ->test(ListingForm::class)
@@ -117,7 +117,7 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_listing_can_be_created_without_city_state_or_address_fields(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $category = Category::factory()->create();
 
         Livewire::actingAs($user)
@@ -141,7 +141,7 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_listing_can_be_created_with_address_fields(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $category = Category::factory()->create();
 
         Livewire::actingAs($user)
@@ -170,7 +170,7 @@ class MarketplaceFlowTest extends TestCase
 
     public function test_listing_form_rejects_an_invalid_address_type(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $category = Category::factory()->create();
 
         Livewire::actingAs($user)
@@ -189,7 +189,7 @@ class MarketplaceFlowTest extends TestCase
     {
         // Regression test: /anuncios/novo and /anuncios/{slug}/editar must not be
         // shadowed by the /anuncios/{listing:slug} wildcard route.
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
         $listing = Listing::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)->get('/anuncios/novo')->assertOk();

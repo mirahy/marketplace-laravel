@@ -21,7 +21,7 @@ class CategoryCreationFromListingFormTest extends TestCase
         Notification::fake();
 
         $admin = User::factory()->create(['is_admin' => true]);
-        $user = User::factory()->create();
+        $user = User::factory()->anunciante()->create();
 
         Livewire::actingAs($user)
             ->test(ListingForm::class)
@@ -39,8 +39,8 @@ class CategoryCreationFromListingFormTest extends TestCase
 
     public function test_pending_category_is_hidden_from_public_pages_but_visible_to_its_author_in_the_form(): void
     {
-        $author = User::factory()->create();
-        $otherUser = User::factory()->create();
+        $author = User::factory()->anunciante()->create();
+        $otherUser = User::factory()->anunciante()->create();
         $category = Category::factory()->create([
             'name' => 'Ferramentas Raras',
             'is_active' => false,

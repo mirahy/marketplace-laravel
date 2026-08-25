@@ -39,6 +39,18 @@ class UserForm
                     ->maxLength(2),
                 Toggle::make('is_admin')
                     ->label('Administrador'),
+                Select::make('role')
+                    ->label('Papel')
+                    ->options([
+                        'anunciante' => 'Anunciante',
+                        'usuario' => 'Usuário',
+                    ])
+                    ->required()
+                    ->default('usuario')
+                    ->afterStateHydrated(fn (Select $component, $record) => $component->state(
+                        $record?->roles->first()?->name ?? 'usuario'
+                    ))
+                    ->dehydrated(false),
                 Select::make('status')
                     ->label('Status')
                     ->options(UserStatus::class)

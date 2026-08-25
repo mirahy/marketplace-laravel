@@ -40,6 +40,19 @@ class UserFactory extends Factory
     }
 
     /**
+     * Assign the default "usuario" role after creation, unless a role has
+     * already been assigned (e.g. via the anunciante() state below).
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            if (! $user->roles()->exists()) {
+                $user->assignRole('usuario');
+            }
+        });
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static
@@ -57,5 +70,13 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => UserStatus::Pendente,
         ]);
+    }
+
+    /**
+     * Indicate that the user has the "anunciante" role (can create listings).
+     */
+    public function anunciante(): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->syncRoles(['anunciante']));
     }
 }

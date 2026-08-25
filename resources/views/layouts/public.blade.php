@@ -44,10 +44,12 @@
 
                     <div class="flex items-center gap-4">
                         @auth
-                            <a href="{{ route('listings.create') }}" wire:navigate
-                                class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
-                                Anunciar
-                            </a>
+                            @can('create', \App\Models\Listing::class)
+                                <a href="{{ route('listings.create') }}" wire:navigate
+                                    class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
+                                    Anunciar
+                                </a>
+                            @endcan
                             <livewire:notification-bell />
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = ! open" class="text-sm text-slate-300 hover:text-white">
