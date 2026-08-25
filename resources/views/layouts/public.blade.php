@@ -19,7 +19,15 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center gap-8">
-                        <a href="{{ route('home') }}" wire:navigate class="flex items-center gap-2">
+                        <button type="button" @click="mobileMenuOpen = ! mobileMenuOpen"
+                            class="sm:hidden text-slate-300 hover:text-white">
+                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path :class="{'hidden': mobileMenuOpen, 'inline-flex': ! mobileMenuOpen }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                <path :class="{'hidden': ! mobileMenuOpen, 'inline-flex': mobileMenuOpen }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <a href="{{ route('home') }}" wire:navigate class="hidden sm:flex items-center gap-2">
                             <x-adbn-logo class="h-9 w-auto" />
                             <span class="text-lg font-bold text-white leading-tight">
                                 ADBN <span class="text-orange-400 font-semibold">Marketplace</span>
@@ -35,14 +43,6 @@
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <button type="button" @click="mobileMenuOpen = ! mobileMenuOpen"
-                            class="sm:hidden text-slate-300 hover:text-white">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{'hidden': mobileMenuOpen, 'inline-flex': ! mobileMenuOpen }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{'hidden': ! mobileMenuOpen, 'inline-flex': mobileMenuOpen }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
                         @auth
                             <a href="{{ route('listings.create') }}" wire:navigate
                                 class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
@@ -77,6 +77,15 @@
 
                 <div x-show="mobileMenuOpen" x-cloak @click.outside="mobileMenuOpen = false"
                     class="sm:hidden pb-4 space-y-1">
+                    <a href="{{ route('home') }}" wire:navigate @click="mobileMenuOpen = false"
+                        class="flex items-center gap-2 px-2 py-2">
+                        <x-adbn-logo id="adbn-flame-mobile" class="h-8 w-auto" />
+                        <span class="text-base font-bold text-white leading-tight">
+                            ADBN <span class="text-orange-400 font-semibold">Marketplace</span>
+                        </span>
+                    </a>
+                    <div class="border-t border-white/10 my-2"></div>
+
                     <a href="{{ route('listings.index') }}" wire:navigate @click="mobileMenuOpen = false"
                         class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
                         Anúncios
