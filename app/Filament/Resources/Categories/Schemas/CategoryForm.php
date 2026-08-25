@@ -18,6 +18,7 @@ class CategoryForm
         return $schema
             ->components([
                 Section::make()
+                    ->columns(2)
                     ->schema([
                         TextInput::make('name')
                             ->label('Nome')

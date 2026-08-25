@@ -20,6 +20,7 @@ class ListingForm
         return $schema
             ->components([
                 Section::make()
+                    ->columns(2)
                     ->schema([
                         TextInput::make('title')
                             ->label('Título')
