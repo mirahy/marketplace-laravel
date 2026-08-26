@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Livewire\ConversationShow;
 use App\Livewire\ListingForm;
 use App\Livewire\ListingShow;
-use App\Notifications\NewMessageReceived;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
@@ -250,9 +249,9 @@ class MarketplaceFlowTest extends TestCase
             'body' => 'Ainda está disponível?',
         ]);
 
-        // The seller sent the message, so the buyer is the one notified by e-mail.
-        Notification::assertSentTo($buyer, NewMessageReceived::class);
-        Notification::assertNotSentTo($seller, NewMessageReceived::class);
+        // E-mails de nova mensagem agora são enviados em lote (comando messages:notify),
+        // não mais de forma síncrona ao enviar a mensagem.
+        Notification::assertNothingSent();
 
         $this->actingAs($stranger)
             ->get("/mensagens/{$conversation->id}")

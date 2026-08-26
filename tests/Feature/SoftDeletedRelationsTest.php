@@ -89,6 +89,13 @@ class SoftDeletedRelationsTest extends TestCase
             'conversation_id' => $conversation->id,
             'body' => 'Ainda está disponível?',
         ]);
+
+        // O e-mail agora só sai quando o comando de lote roda — nada é
+        // enviado de forma síncrona no send().
+        Notification::assertNothingSent();
+
+        $this->artisan('messages:notify')->assertSuccessful();
+
         Notification::assertSentTo($seller, NewMessageReceived::class);
     }
 }
