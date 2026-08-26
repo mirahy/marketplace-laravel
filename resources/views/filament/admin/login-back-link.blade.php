@@ -9,6 +9,6 @@
 
 <div style="width: 100%; text-align: center; margin-top: 1rem;">
     <a href="/" class="adbn-back-to-marketplace" style="font-size: 0.875rem; text-decoration: none;">
-        Retornar para o Marketplace &rarr;
+        Voltar para a Loja &rarr;
     </a>
 </div>

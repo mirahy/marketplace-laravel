@@ -53,7 +53,7 @@ new class extends Component
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('home')" wire:navigate>
-                            {{ __('Voltar para a Home') }}
+                            {{ __('Voltar para a Loja') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('profile')" wire:navigate>
@@ -99,7 +99,7 @@ new class extends Component
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('home')" wire:navigate>
-                    {{ __('Voltar para a Home') }}
+                    {{ __('Voltar para a Loja') }}
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>

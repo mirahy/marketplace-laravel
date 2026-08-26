@@ -46,14 +46,14 @@ class AdminPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Voltar para a Home')
+                NavigationItem::make('Voltar para a Loja')
                     ->url('/')
                     ->icon('heroicon-o-home')
                     ->sort(-1),
             ])
             ->userMenuItems([
                 Action::make('marketplace')
-                    ->label('Retornar para o Marketplace')
+                    ->label('Voltar para a Loja')
                     ->icon('heroicon-o-arrow-left')
                     ->url('/'),
             ])
