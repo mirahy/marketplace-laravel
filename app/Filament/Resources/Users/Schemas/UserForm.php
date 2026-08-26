@@ -35,15 +35,11 @@ class UserForm
                         TextInput::make('phone')
                             ->tel()
                             ->maxLength(20),
-                        Toggle::make('show_phone')
-                            ->label('Exibir telefone nos anúncios'),
                         TextInput::make('city')
                             ->maxLength(255),
                         TextInput::make('state')
                             ->label('UF')
                             ->maxLength(2),
-                        Toggle::make('is_admin')
-                            ->label('Administrador'),
                         Select::make('role')
                             ->label('Papel')
                             ->options([
@@ -60,6 +56,10 @@ class UserForm
                             ->label('Status')
                             ->options(UserStatus::class)
                             ->required(),
+                        Toggle::make('show_phone')
+                            ->label('Exibir telefone nos anúncios'),
+                        Toggle::make('is_admin')
+                            ->label('Administrador'),
                     ]),
             ]);
     }
