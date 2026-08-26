@@ -98,4 +98,68 @@ class SoftDeletedRelationsTest extends TestCase
 
         Notification::assertSentTo($seller, NewMessageReceived::class);
     }
+
+    public function test_inbox_page_still_works_when_a_conversations_listing_was_soft_deleted(): void
+    {
+        $buyer = User::factory()->create();
+        $seller = User::factory()->create();
+        $listing = Listing::factory()->create(['user_id' => $seller->id, 'title' => 'Anúncio da Conversa']);
+        $conversation = Conversation::create([
+            'listing_id' => $listing->id,
+            'buyer_id' => $buyer->id,
+            'seller_id' => $seller->id,
+        ]);
+
+        $listing->delete();
+
+        $this->actingAs($buyer)
+            ->get('/mensagens')
+            ->assertOk()
+            ->assertSee('Anúncio da Conversa');
+    }
+
+    public function test_conversation_page_still_works_when_the_listing_was_soft_deleted(): void
+    {
+        $buyer = User::factory()->create();
+        $seller = User::factory()->create();
+        $listing = Listing::factory()->create(['user_id' => $seller->id, 'title' => 'Anúncio da Conversa']);
+        $conversation = Conversation::create([
+            'listing_id' => $listing->id,
+            'buyer_id' => $buyer->id,
+            'seller_id' => $seller->id,
+        ]);
+
+        $listing->delete();
+
+        $this->actingAs($buyer)
+            ->get('/mensagens/'.$conversation->id)
+            ->assertOk()
+            ->assertSee('Anúncio da Conversa');
+    }
+
+    public function test_batched_message_notification_does_not_crash_when_the_listing_was_soft_deleted(): void
+    {
+        Notification::fake();
+
+        $buyer = User::factory()->create();
+        $seller = User::factory()->create();
+        $listing = Listing::factory()->create(['user_id' => $seller->id, 'title' => 'Anúncio da Conversa']);
+        $conversation = Conversation::create([
+            'listing_id' => $listing->id,
+            'buyer_id' => $buyer->id,
+            'seller_id' => $seller->id,
+        ]);
+
+        Livewire::actingAs($buyer)
+            ->test(ConversationShow::class, ['conversation' => $conversation])
+            ->set('body', 'Ainda está disponível?')
+            ->call('send')
+            ->assertHasNoErrors();
+
+        $listing->delete();
+
+        $this->artisan('messages:notify')->assertSuccessful();
+
+        Notification::assertSentTo($seller, NewMessageReceived::class);
+    }
 }

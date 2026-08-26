@@ -20,7 +20,7 @@
 
     <div class="bg-white border border-gray-100 rounded-lg overflow-hidden">
         <div class="p-4 border-b border-gray-100">
-            <p class="font-medium text-gray-900">{{ $conversation->listing->title }}</p>
+            <p class="font-medium text-gray-900">{{ $conversation->listing->title ?? 'Anúncio removido' }}</p>
             <p class="text-sm text-gray-500">Com {{ $otherUser->name ?? 'Usuário removido' }}</p>
         </div>
 
