@@ -1,4 +1,10 @@
 <div x-data="{ showFilters: false }">
+    <x-breadcrumbs :items="[
+        ['label' => 'Início', 'url' => route('home')],
+        ['label' => 'Anúncios', 'url' => route('listings.index')],
+        ...($category ? [['label' => $category->name, 'url' => route('categories.show', $category)]] : []),
+    ]" />
+
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <button type="button" @click="showFilters = ! showFilters"
             class="md:hidden flex items-center justify-between bg-white border border-gray-100 rounded-lg px-4 py-3 text-sm font-semibold text-gray-800">

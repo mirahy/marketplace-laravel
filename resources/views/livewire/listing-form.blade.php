@@ -1,7 +1,14 @@
 @use('Illuminate\Support\Facades\Storage')
 @use('Illuminate\Support\Str')
 
-<div class="max-w-2xl mx-auto bg-white border border-gray-100 rounded-lg p-6">
+<div class="max-w-2xl mx-auto">
+    <x-breadcrumbs :items="[
+        ['label' => 'Início', 'url' => route('home')],
+        ['label' => 'Meus anúncios', 'url' => route('listings.mine')],
+        ['label' => $listing ? 'Editar anúncio' : 'Novo anúncio'],
+    ]" />
+
+    <div class="bg-white border border-gray-100 rounded-lg p-6">
     <h1 class="text-xl font-bold text-gray-900 mb-6">
         {{ $listing ? 'Editar anúncio' : 'Novo anúncio' }}
     </h1>
@@ -175,4 +182,5 @@
             {{ $listing ? 'Salvar alterações' : 'Publicar anúncio' }}
         </button>
     </form>
+    </div>
 </div>

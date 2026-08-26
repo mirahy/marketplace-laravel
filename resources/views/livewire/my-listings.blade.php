@@ -1,6 +1,11 @@
 @use('Illuminate\Support\Number')
 
 <div>
+    <x-breadcrumbs :items="[
+        ['label' => 'Início', 'url' => route('home')],
+        ['label' => 'Meus anúncios'],
+    ]" />
+
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-xl font-bold text-gray-900">Meus anúncios</h1>
         @can('create', \App\Models\Listing::class)

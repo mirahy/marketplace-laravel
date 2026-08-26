@@ -38,12 +38,15 @@ class ListingIndex extends Component
     #[Url]
     public string $sort = 'recent';
 
+    public ?Category $category = null;
+
     public function mount(?Category $category = null): void
     {
         if ($category) {
             abort_unless($category->is_active, 404);
 
             $this->categoryId = $category->id;
+            $this->category = $category;
         }
     }
 

@@ -1,4 +1,9 @@
 <div>
+    <x-breadcrumbs :items="[
+        ['label' => 'Início', 'url' => route('home')],
+        ['label' => 'Mensagens'],
+    ]" />
+
     <h1 class="text-xl font-bold text-gray-900 mb-6">Mensagens</h1>
 
     @if ($conversations->isEmpty())

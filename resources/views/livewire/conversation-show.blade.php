@@ -12,6 +12,12 @@
         });
     "
 >
+    <x-breadcrumbs :items="[
+        ['label' => 'Início', 'url' => route('home')],
+        ['label' => 'Mensagens', 'url' => route('messages.index')],
+        ['label' => $otherUser->name ?? 'Conversa'],
+    ]" />
+
     <div class="bg-white border border-gray-100 rounded-lg overflow-hidden">
         <div class="p-4 border-b border-gray-100">
             <p class="font-medium text-gray-900">{{ $conversation->listing->title }}</p>

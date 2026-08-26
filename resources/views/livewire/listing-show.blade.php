@@ -12,6 +12,13 @@
         localStorage.setItem(key, JSON.stringify(updated));
     } catch (e) {}
 ">
+    <x-breadcrumbs :items="[
+        ['label' => 'Início', 'url' => route('home')],
+        ['label' => 'Anúncios', 'url' => route('listings.index')],
+        ...($listing->category ? [['label' => $listing->category->name, 'url' => route('categories.show', $listing->category)]] : []),
+        ['label' => $listing->title],
+    ]" />
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-2">
             @php $imageCount = $listing->images->count(); @endphp
