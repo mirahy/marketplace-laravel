@@ -36,7 +36,9 @@
                         <div class="hidden sm:flex gap-6 text-sm font-medium text-slate-300">
                             <a href="{{ route('listings.index') }}" wire:navigate class="hover:text-orange-400">Anúncios</a>
                             @auth
-                                <a href="{{ route('listings.mine') }}" wire:navigate class="hover:text-orange-400">Meus anúncios</a>
+                                @can('create', \App\Models\Listing::class)
+                                    <a href="{{ route('listings.mine') }}" wire:navigate class="hover:text-orange-400">Meus anúncios</a>
+                                @endcan
                                 <a href="{{ route('messages.index') }}" wire:navigate class="hover:text-orange-400">Mensagens</a>
                             @endauth
                         </div>
@@ -93,10 +95,12 @@
                         Anúncios
                     </a>
                     @auth
-                        <a href="{{ route('listings.mine') }}" wire:navigate @click="mobileMenuOpen = false"
-                            class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
-                            Meus anúncios
-                        </a>
+                        @can('create', \App\Models\Listing::class)
+                            <a href="{{ route('listings.mine') }}" wire:navigate @click="mobileMenuOpen = false"
+                                class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
+                                Meus anúncios
+                            </a>
+                        @endcan
                         <a href="{{ route('messages.index') }}" wire:navigate @click="mobileMenuOpen = false"
                             class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
                             Mensagens
