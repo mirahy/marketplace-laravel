@@ -68,4 +68,13 @@ class User extends Authenticatable implements FilamentUser
     {
         $this->update(['status' => UserStatus::Rejeitado]);
     }
+
+    public function whatsappNumber(): ?string
+    {
+        if (! $this->phone) {
+            return null;
+        }
+
+        return '55'.preg_replace('/\D/', '', $this->phone);
+    }
 }

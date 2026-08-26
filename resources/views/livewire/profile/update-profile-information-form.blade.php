@@ -112,7 +112,15 @@ new class extends Component
 
         <div>
             <x-input-label for="phone" :value="__('Telefone')" />
-            <x-text-input wire:model="phone" id="phone" name="phone" type="text" class="mt-1 block w-full" autocomplete="tel" placeholder="(00) 90000-0000" />
+            <x-text-input wire:model="phone" id="phone" name="phone" type="text" class="mt-1 block w-full"
+                autocomplete="tel" placeholder="(00) 90000-0000" maxlength="15"
+                x-on:input="
+                    let v = $event.target.value.replace(/\D/g, '').slice(0, 11);
+                    if (v.length > 7) { v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3'); }
+                    else if (v.length > 2) { v = v.replace(/^(\d{2})(\d{0,5})/, '($1) $2'); }
+                    else { v = v.replace(/^(\d{0,2})/, '($1'); }
+                    $event.target.value = v;
+                " />
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
 
             <label for="show_phone" class="mt-3 flex items-center gap-2">

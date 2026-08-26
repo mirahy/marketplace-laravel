@@ -34,6 +34,7 @@ class UserForm
                             ->maxLength(255),
                         TextInput::make('phone')
                             ->tel()
+                            ->mask('(99) 99999-9999')
                             ->maxLength(20),
                         TextInput::make('city')
                             ->maxLength(255),

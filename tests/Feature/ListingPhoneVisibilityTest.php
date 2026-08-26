@@ -42,6 +42,17 @@ class ListingPhoneVisibilityTest extends TestCase
         $response->assertOk()->assertSee('(67) 91234-5678');
     }
 
+    public function test_authenticated_viewer_sees_a_whatsapp_link_for_the_sellers_phone(): void
+    {
+        $seller = User::factory()->create(['phone' => '(67) 91234-5678', 'show_phone' => true]);
+        $viewer = User::factory()->create();
+        $listing = Listing::factory()->create(['user_id' => $seller->id]);
+
+        $response = $this->actingAs($viewer)->get('/anuncios/'.$listing->slug);
+
+        $response->assertOk()->assertSee('https://wa.me/5567912345678');
+    }
+
     public function test_authenticated_viewer_does_not_see_the_sellers_phone_when_show_phone_is_disabled(): void
     {
         $seller = User::factory()->create(['phone' => '(67) 91234-5678', 'show_phone' => false]);
