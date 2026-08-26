@@ -21,6 +21,7 @@ class ListingForm
             ->components([
                 Section::make()
                     ->columns(2)
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('title')
                             ->label('Título')

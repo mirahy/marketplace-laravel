@@ -17,6 +17,7 @@ class UserForm
             ->components([
                 Section::make()
                     ->columns(2)
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
                             ->required()

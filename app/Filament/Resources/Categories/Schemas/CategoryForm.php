@@ -19,6 +19,7 @@ class CategoryForm
             ->components([
                 Section::make()
                     ->columns(2)
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
                             ->label('Nome')
