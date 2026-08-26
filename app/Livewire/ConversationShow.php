@@ -50,6 +50,8 @@ class ConversationShow extends Component
         }
 
         $this->body = '';
+
+        $this->dispatch('message-sent');
     }
 
     public function render()
