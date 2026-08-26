@@ -150,6 +150,15 @@
         <div>
             <label class="text-sm font-medium text-gray-700">Adicionar fotos</label>
             <input type="file" wire:model="newPhotos" multiple accept="image/*" class="mt-1 w-full text-sm">
+
+            <div wire:loading wire:target="newPhotos" class="mt-2 flex items-center gap-2 text-sm text-gray-500">
+                <svg class="animate-spin h-4 w-4 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Carregando imagens, aguarde...
+            </div>
+
             @error('newPhotos.*') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
 
             @if (count($newPhotos) > 0)
@@ -161,8 +170,8 @@
             @endif
         </div>
 
-        <button type="submit"
-            class="w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
+        <button type="submit" wire:loading.attr="disabled" wire:target="newPhotos"
+            class="w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700 disabled:opacity-60 disabled:cursor-not-allowed">
             {{ $listing ? 'Salvar alterações' : 'Publicar anúncio' }}
         </button>
     </form>
