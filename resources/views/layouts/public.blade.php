@@ -7,7 +7,7 @@
 
         <title>{{ $title ?? config('app.name') }}</title>
 
-        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        <link rel="icon" type="image/png" href="{{ asset('img/adb.png') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -17,7 +17,7 @@
     <body class="font-sans antialiased bg-gray-50">
         <nav class="bg-[#0b1440] border-b border-white/10" x-data="{ mobileMenuOpen: false }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16 items-center">
+                <div class="flex justify-between h-[74px] items-center">
                     <div class="flex items-center gap-8">
                         <button type="button" @click="mobileMenuOpen = ! mobileMenuOpen"
                             class="sm:hidden text-slate-300 hover:text-white">
@@ -28,9 +28,9 @@
                         </button>
 
                         <a href="{{ route('home') }}" wire:navigate class="hidden sm:flex items-center gap-2">
-                            <x-adbn-logo class="h-9 w-auto" />
+                            <x-adbn-logo class="h-14 w-auto" />
                             <span class="text-lg font-bold text-white leading-tight">
-                                ADBN <span class="text-orange-400 font-semibold">Marketplace</span>
+                                <span class="text-orange-400 font-semibold">Marketplace</span>
                             </span>
                         </a>
                         <div class="hidden sm:flex gap-6 text-sm font-medium text-slate-300">
@@ -83,9 +83,9 @@
                     class="sm:hidden pb-4 space-y-1">
                     <a href="{{ route('home') }}" wire:navigate @click="mobileMenuOpen = false"
                         class="flex items-center gap-2 px-2 py-2">
-                        <x-adbn-logo id="adbn-flame-mobile" class="h-8 w-auto" />
+                        <x-adbn-logo class="h-12 w-auto" />
                         <span class="text-base font-bold text-white leading-tight">
-                            ADBN <span class="text-orange-400 font-semibold">Marketplace</span>
+                            <span class="text-orange-400 font-semibold">Marketplace</span>
                         </span>
                     </a>
                     <div class="border-t border-white/10 my-2"></div>
