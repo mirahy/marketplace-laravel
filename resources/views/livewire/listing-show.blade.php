@@ -139,7 +139,24 @@
                 @endif
 
                 @auth
-                    @if ($listing->user && auth()->id() !== $listing->user_id)
+                    @if (auth()->id() === $listing->user_id)
+                        <div class="mt-4 flex flex-col gap-2">
+                            <a href="{{ route('listings.edit', $listing) }}" wire:navigate
+                                class="block text-center w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold hover:bg-gray-50">
+                                {{ __('Editar') }}
+                            </a>
+                            @if ($listing->status->value === 'ativo')
+                                <button wire:click="pause"
+                                    class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold hover:bg-gray-50">
+                                    {{ __('Pausar') }}
+                                </button>
+                                <button wire:click="markAsSold"
+                                    class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-semibold hover:bg-gray-50">
+                                    {{ __('Marcar vendido') }}
+                                </button>
+                            @endif
+                        </div>
+                    @elseif ($listing->user)
                         <button wire:click="sendMessage"
                             class="mt-4 w-full px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700">
                             {{ __('Enviar mensagem') }}

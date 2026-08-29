@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ListingStatus;
 use App\Models\Conversation;
 use App\Models\Listing;
 use Illuminate\Database\Eloquent\Collection;
@@ -60,6 +61,20 @@ class ListingShow extends Component
         ]);
 
         return redirect()->route('messages.show', $conversation);
+    }
+
+    public function pause(): void
+    {
+        $this->authorize('update', $this->listing);
+        $this->listing->update(['status' => ListingStatus::Pausado]);
+        $this->listing->refresh();
+    }
+
+    public function markAsSold(): void
+    {
+        $this->authorize('update', $this->listing);
+        $this->listing->update(['status' => ListingStatus::Vendido]);
+        $this->listing->refresh();
     }
 
     /**
