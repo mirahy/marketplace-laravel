@@ -105,7 +105,7 @@
             <div class="bg-white border border-gray-100 rounded-lg p-6 sticky top-4">
                 <h1 class="text-xl font-bold text-gray-900">{{ $listing->title }}</h1>
                 <p class="text-2xl font-bold text-orange-600 mt-2">{{ Number::currency($listing->price, in: 'BRL') }}</p>
-                <p class="text-sm text-gray-500 mt-1">{{ $listing->condition->getLabel() }} · {{ $listing->city }}/{{ $listing->state }}</p>
+                <p class="text-sm text-gray-500 mt-1">{{ $listing->condition->getLabel() }}</p>
                 <p class="text-xs text-gray-400 mt-1">{{ __(':count visualizações', ['count' => $listing->views_count]) }}</p>
 
                 <hr class="my-4">
@@ -127,6 +127,15 @@
                     @endauth
                 @else
                     <p class="text-sm text-gray-400">{{ __('Vendedor indisponível') }}</p>
+                @endif
+
+                @php $addressLines = $listing->addressLines(); @endphp
+                @if (! empty($addressLines))
+                    <div class="text-sm text-gray-600 mt-2">
+                        @foreach ($addressLines as $line)
+                            <p>{{ $line }}</p>
+                        @endforeach
+                    </div>
                 @endif
 
                 @auth

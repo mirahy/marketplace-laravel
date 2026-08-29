@@ -89,4 +89,37 @@ class Listing extends Model
             Notification::send($this->user, new ListingStatusUpdated($this));
         }
     }
+
+    /**
+     * @return array<int, string>
+     */
+    public function addressLines(): array
+    {
+        $lines = [];
+
+        $street = collect([$this->address_type?->getLabel(), $this->address_street])
+            ->filter()
+            ->implode(' ');
+
+        if ($street !== '' && $this->address_number) {
+            $lines[] = "{$street}, {$this->address_number}";
+        } elseif ($street !== '') {
+            $lines[] = $street;
+        } elseif ($this->address_number) {
+            $lines[] = $this->address_number;
+        }
+
+        $cityState = collect([$this->city, $this->state])->filter()->implode('/');
+        $neighborhoodLine = collect([$this->address_neighborhood, $cityState])->filter()->implode(' - ');
+
+        if ($neighborhoodLine !== '') {
+            $lines[] = $neighborhoodLine;
+        }
+
+        if ($this->address_complement) {
+            $lines[] = $this->address_complement;
+        }
+
+        return $lines;
+    }
 }
