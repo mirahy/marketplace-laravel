@@ -57,26 +57,30 @@ class ListingIndex extends Component
 
     protected function detectFiltersFromSearchTerm(): void
     {
-        $normalized = Str::lower(Str::ascii($this->search));
-        $words = preg_split('/\s+/', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+        $words = preg_split('/\s+/', trim($this->search), -1, PREG_SPLIT_NO_EMPTY);
 
         if (! $this->categoryId) {
-            $match = Category::query()
+            $bestMatch = Category::query()
                 ->where('is_active', true)
                 ->get(['id', 'name'])
-                ->filter(fn ($c) => str_contains($normalized, Str::lower(Str::ascii($c->name))))
-                ->sortByDesc(fn ($c) => strlen($c->name))
+                ->map(fn ($c) => ['category' => $c, 'range' => $this->findWordSequence($words, $c->name)])
+                ->filter(fn ($pair) => $pair['range'] !== null)
+                ->sortByDesc(fn ($pair) => $pair['range'][1] - $pair['range'][0])
                 ->first();
 
-            if ($match) {
-                $this->categoryId = $match->id;
+            if ($bestMatch) {
+                $this->categoryId = $bestMatch['category']->id;
+                $words = $this->removeWordRange($words, $bestMatch['range']);
             }
         }
 
         if (! $this->condition) {
             foreach (ListingCondition::cases() as $case) {
-                if (str_contains($normalized, Str::lower(Str::ascii($case->getLabel())))) {
+                $range = $this->findWordSequence($words, $case->getLabel());
+
+                if ($range) {
                     $this->condition = $case->value;
+                    $words = $this->removeWordRange($words, $range);
                     break;
                 }
             }
@@ -84,13 +88,61 @@ class ListingIndex extends Component
 
         if (! $this->state) {
             foreach (BrazilianState::cases() as $case) {
-                if (in_array(Str::lower($case->value), $words, true)
-                    || str_contains($normalized, Str::lower(Str::ascii($case->getLabel())))) {
+                $range = $this->findWordSequence($words, $case->value)
+                    ?? $this->findWordSequence($words, $case->getLabel());
+
+                if ($range) {
                     $this->state = $case->value;
+                    $words = $this->removeWordRange($words, $range);
                     break;
                 }
             }
         }
+
+        $this->search = implode(' ', $words);
+    }
+
+    /**
+     * Finds $needle (matched word-by-word, case/accent-insensitive) as a
+     * contiguous run inside $words, returning its [start, end] indexes
+     * (inclusive) or null when it isn't present.
+     *
+     * @param  array<int, string>  $words
+     * @return array{0: int, 1: int}|null
+     */
+    protected function findWordSequence(array $words, string $needle): ?array
+    {
+        $needleWords = preg_split('/\s+/', trim($needle), -1, PREG_SPLIT_NO_EMPTY);
+        $needleCount = count($needleWords);
+
+        if ($needleCount === 0) {
+            return null;
+        }
+
+        $normalize = fn (string $word) => Str::lower(Str::ascii($word));
+        $normalizedWords = array_map($normalize, $words);
+        $normalizedNeedle = array_map($normalize, $needleWords);
+
+        for ($i = 0; $i <= count($normalizedWords) - $needleCount; $i++) {
+            if (array_slice($normalizedWords, $i, $needleCount) === $normalizedNeedle) {
+                return [$i, $i + $needleCount - 1];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<int, string>  $words
+     * @param  array{0: int, 1: int}  $range
+     * @return array<int, string>
+     */
+    protected function removeWordRange(array $words, array $range): array
+    {
+        [$start, $end] = $range;
+        array_splice($words, $start, $end - $start + 1);
+
+        return array_values($words);
     }
 
     public function updating(): void
