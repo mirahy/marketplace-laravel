@@ -14,7 +14,12 @@ class Home extends Component
     public function render()
     {
         return view('livewire.home', [
-            'categories' => Category::query()->where('is_active', true)->orderBy('order')->get(),
+            'categories' => Category::query()
+                ->where('is_active', true)
+                ->whereHas('listings', fn ($q) => $q->active())
+                ->inRandomOrder()
+                ->limit(10)
+                ->get(),
             'featured' => Listing::query()
                 ->with(['images', 'category'])
                 ->where('status', ListingStatus::Ativo)
