@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\UserStatus;
+use App\Filament\Resources\Users\UserResource;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -19,6 +20,8 @@ class PendingUsersWidget extends TableWidget
             ->heading(__('Usuários pendentes'))
             ->query(User::query()->where('status', UserStatus::Pendente)->latest())
             ->paginated(false)
+            ->poll('10s')
+            ->recordUrl(fn ($record) => UserResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')
                     ->label(__('Nome')),

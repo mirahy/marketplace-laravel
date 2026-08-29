@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Enums\UserStatus;
+use App\Filament\Resources\Users\UserResource;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -21,6 +22,8 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->poll('10s')
+            ->recordUrl(fn ($record) => UserResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')
                     ->label(__('Nome'))

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Conversations\Tables;
 
+use App\Filament\Resources\Conversations\ConversationResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ForceDeleteBulkAction;
@@ -17,6 +18,8 @@ class ConversationsTable
     {
         return $table
             ->defaultSort('updated_at', 'desc')
+            ->poll('10s')
+            ->recordUrl(fn ($record) => ConversationResource::getUrl('view', ['record' => $record]))
             ->columns([
                 TextColumn::make('listing.title')
                     ->label(__('Anúncio'))

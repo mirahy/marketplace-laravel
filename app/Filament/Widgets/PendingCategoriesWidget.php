@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\CategoryStatus;
+use App\Filament\Resources\Categories\CategoryResource;
 use App\Models\Category;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -19,6 +20,8 @@ class PendingCategoriesWidget extends TableWidget
             ->heading(__('Categorias pendentes'))
             ->query(Category::query()->where('status', CategoryStatus::Pendente)->latest())
             ->paginated(false)
+            ->poll('10s')
+            ->recordUrl(fn ($record) => CategoryResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')
                     ->label(__('Nome')),

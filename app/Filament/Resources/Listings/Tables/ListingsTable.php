@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Listings\Tables;
 
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
+use App\Filament\Resources\Listings\ListingResource;
 use App\Models\Category;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -26,6 +27,8 @@ class ListingsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->poll('10s')
+            ->recordUrl(fn ($record) => ListingResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 ImageColumn::make('images.path')
                     ->label(__('Foto'))

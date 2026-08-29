@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\ListingStatus;
+use App\Filament\Resources\Listings\ListingResource;
 use App\Models\Listing;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -19,6 +20,8 @@ class PendingListingsWidget extends TableWidget
             ->heading(__('Anúncios pendentes'))
             ->query(Listing::query()->where('status', ListingStatus::EmAnalise)->latest())
             ->paginated(false)
+            ->poll('10s')
+            ->recordUrl(fn ($record) => ListingResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('title')
                     ->label(__('Título'))

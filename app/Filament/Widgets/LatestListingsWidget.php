@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Listings\ListingResource;
 use App\Models\Listing;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -17,6 +18,8 @@ class LatestListingsWidget extends TableWidget
             ->heading(__('Últimos anúncios criados'))
             ->query(Listing::query()->latest()->limit(5))
             ->paginated(false)
+            ->poll('10s')
+            ->recordUrl(fn ($record) => ListingResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('title')
                     ->label(__('Título'))

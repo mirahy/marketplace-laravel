@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Tables;
 
 use App\Enums\CategoryStatus;
+use App\Filament\Resources\Categories\CategoryResource;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -23,6 +24,8 @@ class CategoriesTable
         return $table
             ->reorderable('order')
             ->defaultSort('order')
+            ->poll('10s')
+            ->recordUrl(fn ($record) => CategoryResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')
                     ->label(__('Nome'))
