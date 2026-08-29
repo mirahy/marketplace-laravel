@@ -18,7 +18,7 @@
     <body class="font-sans antialiased bg-gray-50">
         <nav class="bg-[#0b1440] border-b border-white/10" x-data="{ mobileMenuOpen: false }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-[74px] items-center">
+                <div class="flex h-[74px] items-center gap-4">
                     <div class="flex items-center gap-8">
                         <button type="button" @click="mobileMenuOpen = ! mobileMenuOpen"
                             class="sm:hidden text-slate-300 hover:text-white">
@@ -45,7 +45,19 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <form action="{{ route('listings.index') }}" method="GET" class="hidden sm:block flex-1 max-w-md">
+                        <div class="relative">
+                            <button type="submit" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                            </button>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Buscar anúncios...') }}"
+                                class="w-full rounded-md border-gray-300 text-sm pl-9 pr-3 py-2 bg-white/95">
+                        </div>
+                    </form>
+
+                    <div class="flex items-center gap-4 ms-auto">
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = ! open" class="text-sm text-slate-300 hover:text-white flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -107,6 +119,18 @@
                         </span>
                     </a>
                     <div class="border-t border-white/10 my-2"></div>
+
+                    <form action="{{ route('listings.index') }}" method="GET" class="px-2 pb-2">
+                        <div class="relative">
+                            <button type="submit" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                            </button>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Buscar anúncios...') }}"
+                                class="w-full rounded-md border-gray-300 text-sm pl-9 pr-3 py-2 bg-white/95">
+                        </div>
+                    </form>
 
                     <a href="{{ route('listings.index') }}" wire:navigate @click="mobileMenuOpen = false"
                         class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">

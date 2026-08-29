@@ -7,6 +7,7 @@ use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Models\Category;
 use App\Models\Listing;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -47,6 +48,48 @@ class ListingIndex extends Component
 
             $this->categoryId = $category->id;
             $this->category = $category;
+        }
+
+        if ($this->search !== '') {
+            $this->detectFiltersFromSearchTerm();
+        }
+    }
+
+    protected function detectFiltersFromSearchTerm(): void
+    {
+        $normalized = Str::lower(Str::ascii($this->search));
+        $words = preg_split('/\s+/', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+
+        if (! $this->categoryId) {
+            $match = Category::query()
+                ->where('is_active', true)
+                ->get(['id', 'name'])
+                ->filter(fn ($c) => str_contains($normalized, Str::lower(Str::ascii($c->name))))
+                ->sortByDesc(fn ($c) => strlen($c->name))
+                ->first();
+
+            if ($match) {
+                $this->categoryId = $match->id;
+            }
+        }
+
+        if (! $this->condition) {
+            foreach (ListingCondition::cases() as $case) {
+                if (str_contains($normalized, Str::lower(Str::ascii($case->getLabel())))) {
+                    $this->condition = $case->value;
+                    break;
+                }
+            }
+        }
+
+        if (! $this->state) {
+            foreach (BrazilianState::cases() as $case) {
+                if (in_array(Str::lower($case->value), $words, true)
+                    || str_contains($normalized, Str::lower(Str::ascii($case->getLabel())))) {
+                    $this->state = $case->value;
+                    break;
+                }
+            }
         }
     }
 
