@@ -12,8 +12,8 @@ enum ListingCondition: string implements HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::Novo => 'Novo',
-            self::Usado => 'Usado',
+            self::Novo => __('Novo'),
+            self::Usado => __('Usado'),
         };
     }
 }

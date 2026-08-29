@@ -16,11 +16,11 @@ enum ListingStatus: string implements HasColor, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::EmAnalise => 'Em análise',
-            self::Ativo => 'Ativo',
-            self::Pausado => 'Pausado',
-            self::Vendido => 'Vendido',
-            self::Rejeitado => 'Rejeitado',
+            self::EmAnalise => __('Em análise'),
+            self::Ativo => __('Ativo'),
+            self::Pausado => __('Pausado'),
+            self::Vendido => __('Vendido'),
+            self::Rejeitado => __('Rejeitado'),
         };
     }
 

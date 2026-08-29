@@ -13,9 +13,9 @@
     <div x-show="open" @click.outside="open = false" x-cloak
         class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-20 border border-gray-100">
         <div class="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-            <span class="text-sm font-semibold text-gray-900">Notificações</span>
+            <span class="text-sm font-semibold text-gray-900">{{ __('Notificações') }}</span>
             @if ($unreadCount > 0)
-                <button wire:click="markAllAsRead" class="text-xs text-orange-600 hover:underline">Marcar todas como lidas</button>
+                <button wire:click="markAllAsRead" class="text-xs text-orange-600 hover:underline">{{ __('Marcar todas como lidas') }}</button>
             @endif
         </div>
 
@@ -28,7 +28,7 @@
                     <p class="text-xs text-gray-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
                 </button>
             @empty
-                <p class="text-sm text-gray-400 text-center py-6">Nenhuma notificação por enquanto.</p>
+                <p class="text-sm text-gray-400 text-center py-6">{{ __('Nenhuma notificação por enquanto.') }}</p>
             @endforelse
         </div>
     </div>

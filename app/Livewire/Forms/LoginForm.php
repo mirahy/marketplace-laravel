@@ -41,8 +41,8 @@ class LoginForm extends Form
 
         if (Auth::user()->status !== UserStatus::Aprovado) {
             $message = Auth::user()->status === UserStatus::Rejeitado
-                ? 'Seu cadastro foi rejeitado. Entre em contato com a administração.'
-                : 'Sua conta ainda está pendente de aprovação por um administrador.';
+                ? __('Seu cadastro foi rejeitado. Entre em contato com a administração.')
+                : __('Sua conta ainda está pendente de aprovação por um administrador.');
 
             Auth::logout();
 

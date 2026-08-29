@@ -22,7 +22,15 @@ class ConversationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
-    protected static ?string $navigationLabel = 'Conversas';
+    public static function getModelLabel(): string
+    {
+        return __('Conversa');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Conversas');
+    }
 
     public static function infolist(Schema $schema): Schema
     {

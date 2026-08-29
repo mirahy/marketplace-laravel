@@ -1,4 +1,8 @@
-@props(['options' => [], 'selected' => null, 'placeholder' => 'Selecione'])
+@props(['options' => [], 'selected' => null, 'placeholder' => null])
+
+@php
+    $placeholder ??= __('Selecione');
+@endphp
 
 @php
     $wireKey = $attributes->get('wire:key');
@@ -54,7 +58,7 @@
     <div x-show="open" x-cloak
         class="absolute z-20 mt-1 w-full bg-white border border-gray-100 rounded-md shadow-lg">
         <div class="p-2 border-b border-gray-100">
-            <input type="text" x-model="query" @click.stop placeholder="Pesquisar..."
+            <input type="text" x-model="query" @click.stop placeholder="{{ __('Pesquisar...') }}"
                 class="w-full rounded-md border-gray-300 text-sm">
         </div>
         <ul class="max-h-56 overflow-y-auto py-1">
@@ -63,7 +67,7 @@
                     class="px-3 py-2 text-sm cursor-pointer hover:bg-orange-50"></li>
             </template>
             <li x-show="filteredOptions().length === 0"
-                class="px-3 py-2 text-sm text-gray-400">Nenhum resultado</li>
+                class="px-3 py-2 text-sm text-gray-400">{{ __('Nenhum resultado') }}</li>
         </ul>
     </div>
 </div>

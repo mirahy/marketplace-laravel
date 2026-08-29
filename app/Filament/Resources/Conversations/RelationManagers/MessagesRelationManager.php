@@ -23,12 +23,12 @@ class MessagesRelationManager extends RelationManager
             ->defaultSort('created_at')
             ->columns([
                 TextColumn::make('sender.name')
-                    ->label('De'),
+                    ->label(__('De')),
                 TextColumn::make('body')
-                    ->label('Mensagem')
+                    ->label(__('Mensagem'))
                     ->wrap(),
                 TextColumn::make('created_at')
-                    ->label('Enviada em')
+                    ->label(__('Enviada em'))
                     ->dateTime('d/m/Y H:i'),
             ])
             ->filters([])

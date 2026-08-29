@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SupportedLocale;
 use App\Livewire\Actions\Logout;
 use App\Livewire\ConversationShow;
 use App\Livewire\Home;
@@ -37,5 +38,13 @@ Route::post('/logout', function (Logout $logout) {
 
     return redirect('/');
 })->middleware('auth')->name('logout');
+
+Route::get('/idioma/{locale}', function (string $locale) {
+    if (SupportedLocale::tryFrom($locale)) {
+        session(['locale' => $locale]);
+    }
+
+    return redirect()->back();
+})->name('locale.switch');
 
 require __DIR__.'/auth.php';

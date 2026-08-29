@@ -11,33 +11,32 @@ use Filament\Widgets\TableWidget;
 
 class PendingCategoriesWidget extends TableWidget
 {
-    protected static ?string $heading = 'Categorias pendentes';
-
     protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
         return $table
+            ->heading(__('Categorias pendentes'))
             ->query(Category::query()->where('status', CategoryStatus::Pendente)->latest())
             ->paginated(false)
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nome'),
+                    ->label(__('Nome')),
                 TextColumn::make('creator.name')
-                    ->label('Solicitada por')
+                    ->label(__('Solicitada por'))
                     ->placeholder('—'),
                 TextColumn::make('created_at')
-                    ->label('Criada em')
+                    ->label(__('Criada em'))
                     ->dateTime('d/m/Y H:i'),
             ])
             ->recordActions([
                 Action::make('approve')
-                    ->label('Aprovar')
+                    ->label(__('Aprovar'))
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->action(fn ($record) => $record->approve()),
                 Action::make('reject')
-                    ->label('Rejeitar')
+                    ->label(__('Rejeitar'))
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->action(fn ($record) => $record->reject()),

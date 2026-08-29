@@ -23,6 +23,16 @@ class ListingResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('Anúncio');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Anúncios');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ListingForm::configure($schema);

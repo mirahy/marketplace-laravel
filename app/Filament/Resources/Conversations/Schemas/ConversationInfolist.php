@@ -12,13 +12,13 @@ class ConversationInfolist
         return $schema
             ->components([
                 TextEntry::make('listing.title')
-                    ->label('Anúncio'),
+                    ->label(__('Anúncio')),
                 TextEntry::make('buyer.name')
-                    ->label('Comprador'),
+                    ->label(__('Comprador')),
                 TextEntry::make('seller.name')
-                    ->label('Vendedor'),
+                    ->label(__('Vendedor')),
                 TextEntry::make('created_at')
-                    ->label('Iniciada em')
+                    ->label(__('Iniciada em'))
                     ->dateTime('d/m/Y H:i'),
             ]);
     }

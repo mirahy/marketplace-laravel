@@ -13,11 +13,14 @@ class ListingsRelationManager extends RelationManager
 {
     protected static string $relationship = 'listings';
 
-    protected static ?string $title = 'Anúncios';
-
     public function form(Schema $schema): Schema
     {
         return $schema->components([]);
+    }
+
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return __('Anúncios');
     }
 
     public function table(Table $table): Table
@@ -28,22 +31,22 @@ class ListingsRelationManager extends RelationManager
             ->recordUrl(fn ($record) => ListingResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 ImageColumn::make('images.path')
-                    ->label('Foto')
+                    ->label(__('Foto'))
                     ->limit(1)
                     ->getStateUsing(fn ($record) => optional($record->images->first())->path),
                 TextColumn::make('title')
-                    ->label('Título')
+                    ->label(__('Título'))
                     ->searchable(),
                 TextColumn::make('category.name')
-                    ->label('Categoria'),
+                    ->label(__('Categoria')),
                 TextColumn::make('price')
-                    ->label('Preço')
+                    ->label(__('Preço'))
                     ->money('BRL'),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label(__('Criado em'))
                     ->dateTime('d/m/Y')
                     ->sortable(),
             ])

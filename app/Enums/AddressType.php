@@ -18,14 +18,14 @@ enum AddressType: string implements HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::Rua => 'Rua',
-            self::Avenida => 'Avenida',
-            self::Alameda => 'Alameda',
-            self::Travessa => 'Travessa',
-            self::Praca => 'Praça',
-            self::Rodovia => 'Rodovia',
-            self::Estrada => 'Estrada',
-            self::Outro => 'Outro',
+            self::Rua => __('Rua'),
+            self::Avenida => __('Avenida'),
+            self::Alameda => __('Alameda'),
+            self::Travessa => __('Travessa'),
+            self::Praca => __('Praça'),
+            self::Rodovia => __('Rodovia'),
+            self::Estrada => __('Estrada'),
+            self::Outro => __('Outro'),
         };
     }
 }

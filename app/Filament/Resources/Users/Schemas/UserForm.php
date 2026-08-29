@@ -20,32 +20,37 @@ class UserForm
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
+                            ->label(__('Nome'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
+                            ->label(__('E-mail'))
                             ->email()
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         TextInput::make('password')
+                            ->label(__('Senha'))
                             ->password()
                             ->dehydrated(fn (?string $state) => filled($state))
                             ->required(fn (string $operation) => $operation === 'create')
                             ->maxLength(255),
                         TextInput::make('phone')
+                            ->label(__('Telefone'))
                             ->tel()
                             ->mask('(99) 99999-9999')
                             ->maxLength(20),
                         TextInput::make('city')
+                            ->label(__('Cidade'))
                             ->maxLength(255),
                         TextInput::make('state')
-                            ->label('UF')
+                            ->label(__('UF'))
                             ->maxLength(2),
                         Select::make('role')
-                            ->label('Papel')
+                            ->label(__('Papel'))
                             ->options([
-                                'anunciante' => 'Anunciante',
-                                'usuario' => 'Usuário',
+                                'anunciante' => __('Anunciante'),
+                                'usuario' => __('Usuário'),
                             ])
                             ->required()
                             ->default('usuario')
@@ -54,13 +59,13 @@ class UserForm
                             ))
                             ->dehydrated(false),
                         Select::make('status')
-                            ->label('Status')
+                            ->label(__('Status'))
                             ->options(UserStatus::class)
                             ->required(),
                         Toggle::make('show_phone')
-                            ->label('Exibir telefone nos anúncios'),
+                            ->label(__('Exibir telefone nos anúncios')),
                         Toggle::make('is_admin')
-                            ->label('Administrador'),
+                            ->label(__('Administrador')),
                     ]),
             ]);
     }

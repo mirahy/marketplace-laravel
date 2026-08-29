@@ -24,52 +24,53 @@ class ListingForm
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('title')
-                            ->label('Título')
+                            ->label(__('Título'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('slug')
+                            ->label(__('Slug'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         Select::make('user_id')
-                            ->label('Vendedor')
+                            ->label(__('Vendedor'))
                             ->relationship('user', 'name')
                             ->options(fn () => User::query()->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                         Select::make('category_id')
-                            ->label('Categoria')
+                            ->label(__('Categoria'))
                             ->relationship('category', 'name')
                             ->options(fn () => Category::query()->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                         Textarea::make('description')
-                            ->label('Descrição')
+                            ->label(__('Descrição'))
                             ->required()
                             ->columnSpanFull(),
                         TextInput::make('price')
-                            ->label('Preço')
+                            ->label(__('Preço'))
                             ->numeric()
                             ->prefix('R$')
                             ->required(),
                         Select::make('condition')
-                            ->label('Condição')
+                            ->label(__('Condição'))
                             ->options(ListingCondition::class)
                             ->required(),
                         Select::make('status')
-                            ->label('Status')
+                            ->label(__('Status'))
                             ->options(ListingStatus::class)
                             ->required(),
                         TextInput::make('city')
-                            ->label('Cidade')
+                            ->label(__('Cidade'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('state')
-                            ->label('UF')
+                            ->label(__('UF'))
                             ->required()
                             ->maxLength(2),
                         Toggle::make('is_featured')
-                            ->label('Destaque'),
+                            ->label(__('Destaque')),
                     ]),
             ]);
     }

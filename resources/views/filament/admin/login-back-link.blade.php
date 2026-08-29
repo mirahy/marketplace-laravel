@@ -9,6 +9,6 @@
 
 <div style="width: 100%; text-align: center; margin-top: 1rem;">
     <a href="/" class="adbn-back-to-marketplace" style="font-size: 0.875rem; text-decoration: none;">
-        Voltar para a Loja &rarr;
+        {{ __('Voltar para a Loja') }} &rarr;
     </a>
 </div>

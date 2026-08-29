@@ -22,28 +22,29 @@ class CategoryForm
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nome')
+                            ->label(__('Nome'))
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (?string $state, Set $set) => $set('slug', Str::slug($state ?? ''))),
                         TextInput::make('slug')
+                            ->label(__('Slug'))
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                         TextInput::make('icon')
-                            ->label('Ícone (heroicon)')
+                            ->label(__('Ícone (heroicon)'))
                             ->placeholder('heroicon-o-device-phone-mobile')
                             ->maxLength(255),
                         TextInput::make('order')
-                            ->label('Ordem')
+                            ->label(__('Ordem'))
                             ->numeric()
                             ->default(0),
                         Toggle::make('is_active')
-                            ->label('Ativa')
+                            ->label(__('Ativa'))
                             ->default(true),
                         Select::make('status')
-                            ->label('Status')
+                            ->label(__('Status'))
                             ->options(CategoryStatus::class)
                             ->default(CategoryStatus::Aprovado)
                             ->required(),

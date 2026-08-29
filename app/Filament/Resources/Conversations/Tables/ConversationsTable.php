@@ -19,17 +19,17 @@ class ConversationsTable
             ->defaultSort('updated_at', 'desc')
             ->columns([
                 TextColumn::make('listing.title')
-                    ->label('Anúncio')
+                    ->label(__('Anúncio'))
                     ->searchable(),
                 TextColumn::make('buyer.name')
-                    ->label('Comprador'),
+                    ->label(__('Comprador')),
                 TextColumn::make('seller.name')
-                    ->label('Vendedor'),
+                    ->label(__('Vendedor')),
                 TextColumn::make('messages_count')
                     ->counts('messages')
-                    ->label('Mensagens'),
+                    ->label(__('Mensagens')),
                 TextColumn::make('updated_at')
-                    ->label('Última atividade')
+                    ->label(__('Última atividade'))
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
             ])

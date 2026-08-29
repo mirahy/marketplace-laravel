@@ -13,15 +13,15 @@
     "
 >
     <x-breadcrumbs :items="[
-        ['label' => 'Início', 'url' => route('home')],
-        ['label' => 'Mensagens', 'url' => route('messages.index')],
-        ['label' => $otherUser->name ?? 'Conversa'],
+        ['label' => __('Início'), 'url' => route('home')],
+        ['label' => __('Mensagens'), 'url' => route('messages.index')],
+        ['label' => $otherUser->name ?? __('Conversa')],
     ]" />
 
     <div class="bg-white border border-gray-100 rounded-lg overflow-hidden">
         <div class="p-4 border-b border-gray-100">
-            <p class="font-medium text-gray-900">{{ $conversation->listing->title ?? 'Anúncio removido' }}</p>
-            <p class="text-sm text-gray-500">Com {{ $otherUser->name ?? 'Usuário removido' }}</p>
+            <p class="font-medium text-gray-900">{{ $conversation->listing->title ?? __('Anúncio removido') }}</p>
+            <p class="text-sm text-gray-500">{{ __('Com :nome', ['nome' => $otherUser->name ?? __('Usuário removido')]) }}</p>
         </div>
 
         <div x-ref="messages" class="p-4 space-y-3 max-h-96 overflow-y-auto">
@@ -57,15 +57,15 @@
                     </span>
                 </div>
             @empty
-                <p class="text-sm text-gray-400 text-center">Nenhuma mensagem ainda. Diga olá!</p>
+                <p class="text-sm text-gray-400 text-center">{{ __('Nenhuma mensagem ainda. Diga olá!') }}</p>
             @endforelse
         </div>
 
         <form wire:submit="send" class="p-4 border-t border-gray-100 flex gap-2">
-            <input type="text" wire:model="body" placeholder="Escreva uma mensagem..."
+            <input type="text" wire:model="body" placeholder="{{ __('Escreva uma mensagem...') }}"
                 class="flex-1 rounded-md border-gray-300 text-sm">
             <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md font-semibold text-sm hover:bg-orange-700">
-                Enviar
+                {{ __('Enviar') }}
             </button>
         </form>
         @error('body') <p class="text-sm text-red-600 px-4 pb-3">{{ $message }}</p> @enderror

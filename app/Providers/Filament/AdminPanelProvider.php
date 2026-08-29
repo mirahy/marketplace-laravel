@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Enums\SupportedLocale;
+use App\Http\Middleware\SetLocale;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -46,16 +48,22 @@ class AdminPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->navigationItems([
-                NavigationItem::make('Voltar para a Loja')
+                NavigationItem::make(__('Voltar para a Loja'))
                     ->url('/')
                     ->icon('heroicon-o-home')
                     ->sort(-1),
             ])
             ->userMenuItems([
                 Action::make('marketplace')
-                    ->label('Voltar para a Loja')
+                    ->label(__('Voltar para a Loja'))
                     ->icon('heroicon-o-arrow-left')
                     ->url('/'),
+                ...collect(SupportedLocale::cases())
+                    ->map(fn (SupportedLocale $locale) => Action::make('locale_'.$locale->value)
+                        ->label($locale->getLabel())
+                        ->icon('heroicon-o-language')
+                        ->url(fn () => route('locale.switch', $locale->value)))
+                    ->all(),
             ])
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
@@ -65,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                SetLocale::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,

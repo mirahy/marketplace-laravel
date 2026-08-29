@@ -40,7 +40,7 @@ new #[Layout('layouts.guest')] class extends Component
             new NewUserRegistered($user)
         );
 
-        session()->flash('status', 'Cadastro recebido! Aguarde a aprovação de um administrador para acessar sua conta.');
+        session()->flash('status', __('Cadastro recebido! Aguarde a aprovação de um administrador para acessar sua conta.'));
 
         $this->redirect(route('login', absolute: false), navigate: true);
     }

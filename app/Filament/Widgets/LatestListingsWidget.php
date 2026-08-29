@@ -9,31 +9,30 @@ use Filament\Widgets\TableWidget;
 
 class LatestListingsWidget extends TableWidget
 {
-    protected static ?string $heading = 'Últimos anúncios criados';
-
     protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
         return $table
+            ->heading(__('Últimos anúncios criados'))
             ->query(Listing::query()->latest()->limit(5))
             ->paginated(false)
             ->columns([
                 TextColumn::make('title')
-                    ->label('Título')
+                    ->label(__('Título'))
                     ->limit(40),
                 TextColumn::make('category.name')
-                    ->label('Categoria'),
+                    ->label(__('Categoria')),
                 TextColumn::make('user.name')
-                    ->label('Vendedor'),
+                    ->label(__('Vendedor')),
                 TextColumn::make('price')
-                    ->label('Preço')
+                    ->label(__('Preço'))
                     ->money('BRL'),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label(__('Criado em'))
                     ->dateTime('d/m/Y H:i'),
             ]);
     }

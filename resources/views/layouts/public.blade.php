@@ -1,3 +1,4 @@
+@use('App\Enums\SupportedLocale')
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -34,22 +35,39 @@
                             </span>
                         </a>
                         <div class="hidden sm:flex gap-6 text-sm font-medium text-slate-300">
-                            <a href="{{ route('listings.index') }}" wire:navigate class="hover:text-orange-400">Anúncios</a>
+                            <a href="{{ route('listings.index') }}" wire:navigate class="hover:text-orange-400">{{ __('Anúncios') }}</a>
                             @auth
                                 @can('create', \App\Models\Listing::class)
-                                    <a href="{{ route('listings.mine') }}" wire:navigate class="hover:text-orange-400">Meus anúncios</a>
+                                    <a href="{{ route('listings.mine') }}" wire:navigate class="hover:text-orange-400">{{ __('Meus anúncios') }}</a>
                                 @endcan
-                                <a href="{{ route('messages.index') }}" wire:navigate class="hover:text-orange-400">Mensagens</a>
+                                <a href="{{ route('messages.index') }}" wire:navigate class="hover:text-orange-400">{{ __('Mensagens') }}</a>
                             @endauth
                         </div>
                     </div>
 
                     <div class="flex items-center gap-4">
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = ! open" class="text-sm text-slate-300 hover:text-white flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9 4.5 4.03 4.5 9-2.015 9-4.5 9Zm-9-9h18" />
+                                </svg>
+                                <span class="hidden sm:inline">{{ SupportedLocale::from(app()->getLocale())->getLabel() }}</span>
+                            </button>
+                            <div x-show="open" @click.outside="open = false" x-cloak
+                                class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 z-10">
+                                @foreach (SupportedLocale::cases() as $locale)
+                                    <a href="{{ route('locale.switch', $locale->value) }}"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ app()->getLocale() === $locale->value ? 'font-semibold' : '' }}">
+                                        {{ $locale->getLabel() }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
                         @auth
                             @can('create', \App\Models\Listing::class)
                                 <a href="{{ route('listings.create') }}" wire:navigate
                                     class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
-                                    Anunciar
+                                    {{ __('Anunciar') }}
                                 </a>
                             @endcan
                             <livewire:notification-bell />
@@ -60,20 +78,20 @@
                                 <div x-show="open" @click.outside="open = false" x-cloak
                                     class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-10">
                                     @if (auth()->user()->is_admin)
-                                        <a href="/admin" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Painel Admin</a>
+                                        <a href="/admin" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Painel Admin') }}</a>
                                     @endif
-                                    <a href="{{ route('profile') }}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                                    <a href="{{ route('profile') }}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Perfil') }}</a>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sair</button>
+                                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Sair') }}</button>
                                     </form>
                                 </div>
                             </div>
                         @else
-                            <a href="{{ route('login') }}" wire:navigate class="text-sm text-slate-300 hover:text-white">Entrar</a>
+                            <a href="{{ route('login') }}" wire:navigate class="text-sm text-slate-300 hover:text-white">{{ __('Entrar') }}</a>
                             <a href="{{ route('register') }}" wire:navigate
                                 class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
-                                Cadastrar
+                                {{ __('Cadastrar') }}
                             </a>
                         @endauth
                     </div>
@@ -92,20 +110,30 @@
 
                     <a href="{{ route('listings.index') }}" wire:navigate @click="mobileMenuOpen = false"
                         class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
-                        Anúncios
+                        {{ __('Anúncios') }}
                     </a>
                     @auth
                         @can('create', \App\Models\Listing::class)
                             <a href="{{ route('listings.mine') }}" wire:navigate @click="mobileMenuOpen = false"
                                 class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
-                                Meus anúncios
+                                {{ __('Meus anúncios') }}
                             </a>
                         @endcan
                         <a href="{{ route('messages.index') }}" wire:navigate @click="mobileMenuOpen = false"
                             class="block px-2 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-orange-400 hover:bg-white/5">
-                            Mensagens
+                            {{ __('Mensagens') }}
                         </a>
                     @endauth
+
+                    <div class="border-t border-white/10 my-2"></div>
+                    <div class="flex gap-2 px-2 py-2">
+                        @foreach (SupportedLocale::cases() as $locale)
+                            <a href="{{ route('locale.switch', $locale->value) }}"
+                                class="px-2 py-1 rounded-md text-xs font-medium {{ app()->getLocale() === $locale->value ? 'bg-orange-600 text-white' : 'text-slate-300 hover:bg-white/5' }}">
+                                {{ $locale->getLabel() }}
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </nav>

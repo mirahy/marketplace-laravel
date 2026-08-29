@@ -27,7 +27,7 @@ class ImagesRelationManager extends RelationManager
             ->defaultSort('order')
             ->columns([
                 ImageColumn::make('path')
-                    ->label('Foto'),
+                    ->label(__('Foto')),
             ])
             ->headerActions([])
             ->recordActions([

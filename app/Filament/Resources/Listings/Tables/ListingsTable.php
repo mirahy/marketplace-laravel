@@ -28,54 +28,57 @@ class ListingsTable
         return $table
             ->columns([
                 ImageColumn::make('images.path')
-                    ->label('Foto')
+                    ->label(__('Foto'))
                     ->limit(1)
                     ->getStateUsing(fn ($record) => optional($record->images->first())->path),
                 TextColumn::make('title')
-                    ->label('Título')
+                    ->label(__('Título'))
                     ->searchable()
                     ->limit(40),
                 TextColumn::make('category.name')
-                    ->label('Categoria'),
+                    ->label(__('Categoria')),
                 TextColumn::make('user.name')
-                    ->label('Vendedor'),
+                    ->label(__('Vendedor')),
                 TextColumn::make('price')
-                    ->label('Preço')
+                    ->label(__('Preço'))
                     ->money('BRL'),
                 TextColumn::make('condition')
-                    ->label('Condição')
+                    ->label(__('Condição'))
                     ->badge(),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->badge(),
                 TextColumn::make('city')
-                    ->label('Local')
+                    ->label(__('Local'))
                     ->formatStateUsing(fn ($record) => trim("{$record->city}/{$record->state}", '/')),
                 TextColumn::make('views_count')
-                    ->label('Views')
+                    ->label(__('Views'))
                     ->sortable(),
                 IconColumn::make('is_featured')
-                    ->label('Destaque')
+                    ->label(__('Destaque'))
                     ->boolean(),
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label(__('Criado em'))
                     ->dateTime('d/m/Y')
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
+                    ->label(__('Status'))
                     ->options(ListingStatus::class),
                 SelectFilter::make('category_id')
-                    ->label('Categoria')
+                    ->label(__('Categoria'))
                     ->options(fn () => Category::query()->pluck('name', 'id')),
                 SelectFilter::make('condition')
+                    ->label(__('Condição'))
                     ->options(ListingCondition::class),
-                TernaryFilter::make('is_featured'),
+                TernaryFilter::make('is_featured')
+                    ->label(__('Destaque')),
                 Filter::make('price_range')
-                    ->label('Faixa de preço')
+                    ->label(__('Faixa de preço'))
                     ->schema([
-                        \Filament\Forms\Components\TextInput::make('price_min')->numeric()->label('Preço mín.'),
-                        \Filament\Forms\Components\TextInput::make('price_max')->numeric()->label('Preço máx.'),
+                        \Filament\Forms\Components\TextInput::make('price_min')->numeric()->label(__('Preço mín.')),
+                        \Filament\Forms\Components\TextInput::make('price_max')->numeric()->label(__('Preço máx.')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -86,19 +89,19 @@ class ListingsTable
             ])
             ->recordActions([
                 Action::make('approve')
-                    ->label('Aprovar')
+                    ->label(__('Aprovar'))
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn ($record) => $record->status === ListingStatus::EmAnalise)
                     ->action(fn ($record) => $record->approve()),
                 Action::make('reject')
-                    ->label('Rejeitar')
+                    ->label(__('Rejeitar'))
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->visible(fn ($record) => $record->status === ListingStatus::EmAnalise)
                     ->action(fn ($record) => $record->reject()),
                 Action::make('toggleFeatured')
-                    ->label(fn ($record) => $record->is_featured ? 'Remover destaque' : 'Destacar')
+                    ->label(fn ($record) => $record->is_featured ? __('Remover destaque') : __('Destacar'))
                     ->icon('heroicon-o-star')
                     ->color('warning')
                     ->action(fn ($record) => $record->update(['is_featured' => ! $record->is_featured])),
