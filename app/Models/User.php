@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserStatus;
+use App\Models\Concerns\LogsAllChanges;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'city', 'state', 'status', 'show_phone'])]
@@ -21,7 +23,12 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasFactory, Notifiable, SoftDeletes, HasRoles, LogsAllChanges;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return $this->baseActivitylogOptions()->logExcept(['password', 'remember_token']);
+    }
 
     /**
      * Get the attributes that should be cast.

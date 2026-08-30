@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AddressType;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
+use App\Models\Concerns\LogsAllChanges;
 use App\Notifications\ListingStatusUpdated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Illuminate\Support\Str;
 
 class Listing extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsAllChanges;
 
     protected $fillable = [
         'category_id', 'title', 'description', 'price', 'condition',

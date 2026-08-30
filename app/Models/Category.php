@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CategoryStatus;
+use App\Models\Concerns\LogsAllChanges;
 use App\Notifications\CategoryStatusUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Notification;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsAllChanges;
 
     protected $fillable = ['name', 'slug', 'icon', 'order', 'is_active', 'status', 'created_by'];
 
