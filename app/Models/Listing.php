@@ -21,7 +21,7 @@ class Listing extends Model
     use HasFactory, SoftDeletes, LogsAllChanges;
 
     protected $fillable = [
-        'user_id', 'category_id', 'title', 'description', 'price', 'condition',
+        'user_id', 'category_id', 'title', 'slug', 'description', 'price', 'condition',
         'status', 'city', 'state', 'is_featured', 'published_at',
         'address_type', 'address_street', 'address_number',
         'address_neighborhood', 'address_complement',
