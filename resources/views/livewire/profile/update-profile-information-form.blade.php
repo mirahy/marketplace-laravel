@@ -12,6 +12,7 @@ new class extends Component
     public string $email = '';
     public string $phone = '';
     public bool $show_phone = true;
+    public bool $show_phone_to_guests = false;
 
     /**
      * Mount the component.
@@ -22,6 +23,7 @@ new class extends Component
         $this->email = Auth::user()->email;
         $this->phone = Auth::user()->phone ?? '';
         $this->show_phone = Auth::user()->show_phone ?? true;
+        $this->show_phone_to_guests = Auth::user()->show_phone_to_guests ?? false;
     }
 
     /**
@@ -36,6 +38,7 @@ new class extends Component
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'phone' => ['nullable', 'string', 'max:30'],
             'show_phone' => ['boolean'],
+            'show_phone_to_guests' => ['boolean'],
         ]);
 
         $user->fill($validated);
@@ -127,6 +130,12 @@ new class extends Component
                 <input wire:model="show_phone" id="show_phone" name="show_phone" type="checkbox"
                     class="rounded border-gray-300 text-orange-600 shadow-sm focus:ring-orange-500">
                 <span class="text-sm text-gray-600">{{ __('Exibir meu telefone nos meus anúncios') }}</span>
+            </label>
+
+            <label for="show_phone_to_guests" class="mt-3 flex items-center gap-2">
+                <input wire:model="show_phone_to_guests" id="show_phone_to_guests" name="show_phone_to_guests" type="checkbox"
+                    class="rounded border-gray-300 text-orange-600 shadow-sm focus:ring-orange-500">
+                <span class="text-sm text-gray-600">{{ __('Exibir contato para usuários não cadastrados') }}</span>
             </label>
         </div>
 

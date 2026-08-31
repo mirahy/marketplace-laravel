@@ -11,9 +11,31 @@ class ListingPhoneVisibilityTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_guest_never_sees_the_sellers_phone_number(): void
+    public function test_guest_does_not_see_the_sellers_phone_number_by_default(): void
     {
-        $seller = User::factory()->create(['phone' => '(67) 91234-5678', 'show_phone' => true]);
+        $seller = User::factory()->create(['phone' => '(67) 91234-5678', 'show_phone' => true, 'show_phone_to_guests' => false]);
+        $listing = Listing::factory()->create(['user_id' => $seller->id]);
+
+        $response = $this->get('/anuncios/'.$listing->slug);
+
+        $response->assertOk()->assertDontSee('(67) 91234-5678');
+    }
+
+    public function test_guest_sees_the_sellers_phone_when_show_phone_to_guests_is_enabled(): void
+    {
+        $seller = User::factory()->create(['phone' => '(67) 91234-5678', 'show_phone' => true, 'show_phone_to_guests' => true]);
+        $listing = Listing::factory()->create(['user_id' => $seller->id]);
+
+        $response = $this->get('/anuncios/'.$listing->slug);
+
+        $response->assertOk()
+            ->assertSee('(67) 91234-5678')
+            ->assertSee('https://wa.me/5567912345678');
+    }
+
+    public function test_guest_does_not_see_the_phone_when_show_phone_to_guests_is_enabled_but_show_phone_is_disabled(): void
+    {
+        $seller = User::factory()->create(['phone' => '(67) 91234-5678', 'show_phone' => false, 'show_phone_to_guests' => true]);
         $listing = Listing::factory()->create(['user_id' => $seller->id]);
 
         $response = $this->get('/anuncios/'.$listing->slug);

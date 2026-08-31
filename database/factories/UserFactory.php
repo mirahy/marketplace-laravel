@@ -36,6 +36,7 @@ class UserFactory extends Factory
             'state' => fake()->stateAbbr(),
             'status' => UserStatus::Aprovado,
             'show_phone' => true,
+            'show_phone_to_guests' => false,
         ];
     }
 

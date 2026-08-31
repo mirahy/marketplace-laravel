@@ -48,7 +48,7 @@ class ProfileTest extends TestCase
 
     public function test_user_can_update_phone_and_toggle_its_visibility(): void
     {
-        $user = User::factory()->create(['phone' => null, 'show_phone' => true]);
+        $user = User::factory()->create(['phone' => null, 'show_phone' => true, 'show_phone_to_guests' => false]);
 
         $this->actingAs($user);
 
@@ -57,6 +57,7 @@ class ProfileTest extends TestCase
             ->set('email', $user->email)
             ->set('phone', '(67) 99999-0000')
             ->set('show_phone', false)
+            ->set('show_phone_to_guests', true)
             ->call('updateProfileInformation');
 
         $component->assertHasNoErrors();
@@ -65,6 +66,7 @@ class ProfileTest extends TestCase
 
         $this->assertSame('(67) 99999-0000', $user->phone);
         $this->assertFalse($user->show_phone);
+        $this->assertTrue($user->show_phone_to_guests);
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void

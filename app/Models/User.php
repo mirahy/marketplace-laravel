@@ -18,7 +18,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'city', 'state', 'status', 'show_phone'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'city', 'state', 'status', 'show_phone', 'show_phone_to_guests'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -42,6 +42,7 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'show_phone' => 'boolean',
+            'show_phone_to_guests' => 'boolean',
             'status' => UserStatus::class,
         ];
     }

@@ -64,6 +64,8 @@ class UserForm
                             ->required(),
                         Toggle::make('show_phone')
                             ->label(__('Exibir telefone nos anúncios')),
+                        Toggle::make('show_phone_to_guests')
+                            ->label(__('Exibir contato para usuários não cadastrados')),
                         Toggle::make('is_admin')
                             ->label(__('Administrador')),
                     ]),

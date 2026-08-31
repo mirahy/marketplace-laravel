@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Listings\Schemas;
 
+use App\Enums\AddressType;
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Models\Category;
@@ -69,6 +70,22 @@ class ListingForm
                             ->label(__('UF'))
                             ->required()
                             ->maxLength(2),
+                        Select::make('address_type')
+                            ->label(__('Tipo de logradouro'))
+                            ->options(AddressType::class),
+                        TextInput::make('address_street')
+                            ->label(__('Logradouro'))
+                            ->maxLength(255),
+                        TextInput::make('address_number')
+                            ->label(__('Número'))
+                            ->maxLength(20),
+                        TextInput::make('address_neighborhood')
+                            ->label(__('Bairro'))
+                            ->maxLength(255),
+                        TextInput::make('address_complement')
+                            ->label(__('Complemento'))
+                            ->maxLength(255)
+                            ->columnSpanFull(),
                         Toggle::make('is_featured')
                             ->label(__('Destaque')),
                     ]),
