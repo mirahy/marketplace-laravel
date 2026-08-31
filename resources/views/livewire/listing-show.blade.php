@@ -114,14 +114,22 @@
                 @if ($listing->user)
                     <p class="text-sm text-gray-600">{{ $listing->user->name }}</p>
                     @if ($listing->user->phone && $listing->user->show_phone && (auth()->check() || $listing->user->show_phone_to_guests))
-                        <p class="text-sm text-gray-600 flex items-center gap-1.5">
-                            <a href="https://wa.me/{{ $listing->user->whatsappNumber() }}" target="_blank" rel="noopener noreferrer" title="{{ __('Conversar no WhatsApp') }}">
+                        @php
+                            $whatsappMessage = __('Olá, gostaria de falar sobre o anúncio: :link', ['link' => route('listings.show', $listing)]);
+                        @endphp
+                        <div x-data="{ copied: false }" class="text-sm text-gray-600 flex items-center gap-1.5">
+                            <a href="https://wa.me/{{ $listing->user->whatsappNumber() }}?text={{ urlencode($whatsappMessage) }}" target="_blank" rel="noopener noreferrer" title="{{ __('Conversar no WhatsApp') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-4 w-4 text-green-500 shrink-0">
                                     <path fill="currentColor" d="M16.004 2.667c-7.363 0-13.333 5.97-13.333 13.333 0 2.351.616 4.646 1.787 6.665l-1.898 6.933a1 1 0 0 0 1.226 1.226l6.933-1.898a13.28 13.28 0 0 0 6.665 1.787h.006c7.363 0 13.333-5.97 13.333-13.333s-5.97-13.333-13.333-13.333zm0 24.24h-.005a10.87 10.87 0 0 1-5.87-1.72l-.42-.25-4.114 1.126 1.126-4.114-.25-.42a10.87 10.87 0 0 1-1.72-5.87c0-6.008 4.892-10.9 10.9-10.9 2.911 0 5.649 1.135 7.71 3.196a10.83 10.83 0 0 1 3.19 7.71c0 6.008-4.892 10.9-10.9 10.9zm5.984-8.157c-.328-.164-1.94-.957-2.24-1.066-.301-.109-.52-.164-.738.164-.219.328-.847 1.066-1.038 1.284-.191.219-.383.246-.71.082-.328-.164-1.385-.51-2.638-1.627-.975-.869-1.633-1.942-1.824-2.27-.191-.328-.02-.505.144-.668.148-.148.328-.383.492-.574.164-.191.219-.328.328-.547.109-.219.055-.41-.027-.574-.082-.164-.738-1.78-1.012-2.436-.267-.64-.538-.554-.738-.564l-.629-.011a1.21 1.21 0 0 0-.875.41c-.301.328-1.148 1.121-1.148 2.735s1.175 3.172 1.339 3.39c.164.219 2.312 3.53 5.603 4.949.783.338 1.394.54 1.87.691.786.25 1.5.215 2.065.13.63-.094 1.94-.793 2.213-1.559.273-.766.273-1.422.191-1.559-.082-.137-.301-.219-.629-.383z" />
                                 </svg>
                             </a>
-                            {{ $listing->user->phone }}
-                        </p>
+                            <button type="button" title="{{ __('Copiar telefone') }}"
+                                @click="navigator.clipboard.writeText('{{ $listing->user->phone }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                                class="hover:underline cursor-pointer">
+                                {{ $listing->user->phone }}
+                            </button>
+                            <span x-show="copied" x-cloak x-transition class="text-xs text-green-600 font-medium">{{ __('Copiado!') }}</span>
+                        </div>
                     @endif
                 @else
                     <p class="text-sm text-gray-400">{{ __('Vendedor indisponível') }}</p>

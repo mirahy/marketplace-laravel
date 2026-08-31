@@ -7,6 +7,9 @@ use App\Models\Conversation;
 use App\Models\Listing;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Number;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -150,10 +153,28 @@ class ListingShow extends Component
         return $categoryItems->concat($historyItems);
     }
 
+    protected function resolveOgImage(): string
+    {
+        $image = $this->listing->images->first();
+
+        if (! $image) {
+            return asset('img/adb.png');
+        }
+
+        return Str::startsWith($image->path, 'http') ? $image->path : Storage::url($image->path);
+    }
+
     public function render()
     {
         return view('livewire.listing-show', [
             'related' => $this->resolveRelated(),
+        ])->layoutData([
+            'title' => $this->listing->title.' - '.config('app.name'),
+            'ogTitle' => $this->listing->title,
+            'ogDescription' => $this->listing->condition->getLabel().' · '.Number::currency($this->listing->price, in: 'BRL'),
+            'ogImage' => $this->resolveOgImage(),
+            'ogUrl' => route('listings.show', $this->listing),
+            'ogType' => 'product',
         ]);
     }
 }

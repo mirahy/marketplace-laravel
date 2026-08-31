@@ -144,6 +144,6 @@ class ListingAddressDisplayTest extends TestCase
             ->assertSee('Rua das Flores, 123')
             ->assertSee('Centro - Naviraí/MS')
             ->assertSee('Apto 12')
-            ->assertDontSee($listing->condition->getLabel().' · ');
+            ->assertDontSee($listing->condition->getLabel().' · '.$listing->city.'/'.$listing->state);
     }
 }

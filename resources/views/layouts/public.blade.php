@@ -8,6 +8,14 @@
 
         <title>{{ $title ?? config('app.name') }}</title>
 
+        <meta property="og:title" content="{{ $ogTitle ?? $title ?? config('app.name') }}">
+        <meta property="og:description" content="{{ $ogDescription ?? __('Itens usados doados pela comunidade, à venda para apoiar a obra da ADBN.') }}">
+        <meta property="og:image" content="{{ $ogImage ?? asset('img/adb.png') }}">
+        <meta property="og:url" content="{{ $ogUrl ?? url()->current() }}">
+        <meta property="og:type" content="{{ $ogType ?? 'website' }}">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta name="twitter:card" content="summary_large_image">
+
         <link rel="icon" type="image/png" href="{{ asset('img/adb.png') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
