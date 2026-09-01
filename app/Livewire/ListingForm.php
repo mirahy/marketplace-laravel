@@ -136,6 +136,44 @@ class ListingForm extends Component
             ->all();
     }
 
+    public function moveExistingImage(int $imageId, int $direction): void
+    {
+        $images = collect($this->existingImages)->values();
+        $index = $images->search(fn ($img) => $img->id === $imageId);
+
+        if ($index === false) {
+            return;
+        }
+
+        $targetIndex = $index + $direction;
+
+        if ($targetIndex < 0 || $targetIndex >= $images->count()) {
+            return;
+        }
+
+        $current = $images[$index];
+        $target = $images[$targetIndex];
+
+        $currentOrder = $current->order;
+        $current->update(['order' => $target->order]);
+        $target->update(['order' => $currentOrder]);
+
+        $this->existingImages = $this->listing->images()->orderBy('order')->get()->all();
+    }
+
+    public function moveNewPhoto(int $index, int $direction): void
+    {
+        $targetIndex = $index + $direction;
+
+        if ($targetIndex < 0 || $targetIndex >= count($this->newPhotos)) {
+            return;
+        }
+
+        $temp = $this->newPhotos[$index];
+        $this->newPhotos[$index] = $this->newPhotos[$targetIndex];
+        $this->newPhotos[$targetIndex] = $temp;
+    }
+
     public function save()
     {
         $data = $this->validate([

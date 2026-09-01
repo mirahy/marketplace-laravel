@@ -143,11 +143,29 @@
                 <label class="text-sm font-medium text-gray-700">{{ __('Fotos atuais') }}</label>
                 <div class="mt-2 grid grid-cols-4 gap-2">
                     @foreach ($existingImages as $image)
-                        <div class="relative">
+                        <div class="relative" wire:key="existing-image-{{ $image->id }}">
                             <img src="{{ Str::startsWith($image->path, 'http') ? $image->path : Storage::url($image->path) }}"
                                 class="w-full h-20 object-cover rounded-md">
                             <button type="button" wire:click="removeExistingImage({{ $image->id }})"
                                 class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs">×</button>
+                            <div class="absolute inset-x-0 bottom-0 flex justify-center gap-1 pb-1">
+                                <button type="button" wire:click="moveExistingImage({{ $image->id }}, -1)"
+                                    @if ($loop->first) disabled @endif
+                                    class="bg-white/90 hover:bg-white text-gray-700 rounded-full w-5 h-5 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                                    title="{{ __('Mover para trás') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                    </svg>
+                                </button>
+                                <button type="button" wire:click="moveExistingImage({{ $image->id }}, 1)"
+                                    @if ($loop->last) disabled @endif
+                                    class="bg-white/90 hover:bg-white text-gray-700 rounded-full w-5 h-5 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                                    title="{{ __('Mover para frente') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -170,8 +188,28 @@
 
             @if (count($newPhotos) > 0)
                 <div class="mt-2 grid grid-cols-4 gap-2">
-                    @foreach ($newPhotos as $photo)
-                        <img src="{{ $photo->temporaryUrl() }}" class="w-full h-20 object-cover rounded-md">
+                    @foreach ($newPhotos as $i => $photo)
+                        <div class="relative" wire:key="new-photo-{{ $i }}">
+                            <img src="{{ $photo->temporaryUrl() }}" class="w-full h-20 object-cover rounded-md">
+                            <div class="absolute inset-x-0 bottom-0 flex justify-center gap-1 pb-1">
+                                <button type="button" wire:click="moveNewPhoto({{ $i }}, -1)"
+                                    @if ($i === 0) disabled @endif
+                                    class="bg-white/90 hover:bg-white text-gray-700 rounded-full w-5 h-5 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                                    title="{{ __('Mover para trás') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                    </svg>
+                                </button>
+                                <button type="button" wire:click="moveNewPhoto({{ $i }}, 1)"
+                                    @if ($i === count($newPhotos) - 1) disabled @endif
+                                    class="bg-white/90 hover:bg-white text-gray-700 rounded-full w-5 h-5 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                                    title="{{ __('Mover para frente') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
             @endif
