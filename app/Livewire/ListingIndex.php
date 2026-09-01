@@ -65,7 +65,8 @@ class ListingIndex extends Component
 
                 $q->where(function ($q) use ($words) {
                     foreach ($words as $word) {
-                        $q->orWhere('title', 'like', "%{$word}%");
+                        $q->orWhere('title', 'like', "%{$word}%")
+                            ->orWhere('description', 'like', "%{$word}%");
                     }
                 });
             })

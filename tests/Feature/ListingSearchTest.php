@@ -76,4 +76,48 @@ class ListingSearchTest extends TestCase
             ->set('search', 'geladeira micro-ondas')
             ->assertDontSee($listing->title);
     }
+
+    public function test_search_matches_a_word_found_only_in_the_description(): void
+    {
+        $match = Listing::factory()->create([
+            'status' => ListingStatus::Ativo,
+            'title' => 'Kit de ferramentas',
+            'description' => 'Acompanha chave de fenda e alicate.',
+        ]);
+        $noMatch = Listing::factory()->create([
+            'status' => ListingStatus::Ativo,
+            'title' => 'Mesa de escritório',
+            'description' => 'Em bom estado, sem arranhões.',
+        ]);
+
+        Livewire::test(ListingIndex::class)
+            ->set('search', 'alicate')
+            ->assertSee($match->title)
+            ->assertDontSee($noMatch->title);
+    }
+
+    public function test_search_with_multiple_words_matches_across_title_and_description(): void
+    {
+        $matchesByTitle = Listing::factory()->create([
+            'status' => ListingStatus::Ativo,
+            'title' => 'Bicicleta aro 29',
+            'description' => 'Usada, poucos km rodados.',
+        ]);
+        $matchesByDescription = Listing::factory()->create([
+            'status' => ListingStatus::Ativo,
+            'title' => 'Mesa de escritório',
+            'description' => 'Acompanha cadeira giratória.',
+        ]);
+        $matchesNeither = Listing::factory()->create([
+            'status' => ListingStatus::Ativo,
+            'title' => 'Sofá de três lugares',
+            'description' => 'Tecido impermeável.',
+        ]);
+
+        Livewire::test(ListingIndex::class)
+            ->set('search', 'bicicleta giratória')
+            ->assertSee($matchesByTitle->title)
+            ->assertSee($matchesByDescription->title)
+            ->assertDontSee($matchesNeither->title);
+    }
 }
