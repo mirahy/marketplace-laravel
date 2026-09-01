@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/anuncios/novo', ListingForm::class)->name('listings.create');
     Route::get('/anuncios/{listing:slug}/editar', ListingForm::class)->name('listings.edit');
     Route::get('/mensagens', Inbox::class)->name('messages.index');
+    Route::get('/mensagens/nova/{listing:slug}', ConversationShow::class)->name('messages.start');
     Route::get('/mensagens/{conversation}', ConversationShow::class)->name('messages.show');
 });
 

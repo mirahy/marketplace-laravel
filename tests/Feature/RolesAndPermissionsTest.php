@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\ListingStatus;
 use App\Filament\Resources\Users\Pages\EditUser;
+use App\Livewire\ConversationShow;
 use App\Livewire\ListingForm;
 use App\Livewire\ListingShow;
 use App\Models\Category;
@@ -78,7 +79,18 @@ class RolesAndPermissionsTest extends TestCase
 
             Livewire::actingAs($buyer)
                 ->test(ListingShow::class, ['listing' => $listing])
-                ->call('sendMessage');
+                ->call('sendMessage')
+                ->assertRedirect(route('messages.start', $listing));
+
+            $this->assertDatabaseMissing('conversations', [
+                'listing_id' => $listing->id,
+                'buyer_id' => $buyer->id,
+            ]);
+
+            Livewire::actingAs($buyer)
+                ->test(ConversationShow::class, ['listing' => $listing])
+                ->set('body', 'Olá, tenho interesse!')
+                ->call('send');
 
             $this->assertDatabaseHas('conversations', [
                 'listing_id' => $listing->id,

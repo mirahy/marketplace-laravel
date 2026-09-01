@@ -232,11 +232,25 @@ class MarketplaceFlowTest extends TestCase
 
         Livewire::actingAs($buyer)
             ->test(ListingShow::class, ['listing' => $listing])
-            ->call('sendMessage');
+            ->call('sendMessage')
+            ->assertRedirect(route('messages.start', $listing));
+
+        // Clicking "Enviar mensagem" alone must not create a conversation yet.
+        $this->assertDatabaseCount('conversations', 0);
+
+        Livewire::actingAs($buyer)
+            ->test(ConversationShow::class, ['listing' => $listing])
+            ->set('body', 'Olá, ainda está disponível?')
+            ->call('send');
 
         $conversation = Conversation::query()->firstOrFail();
         $this->assertSame($buyer->id, $conversation->buyer_id);
         $this->assertSame($seller->id, $conversation->seller_id);
+        $this->assertDatabaseHas('messages', [
+            'conversation_id' => $conversation->id,
+            'sender_id' => $buyer->id,
+            'body' => 'Olá, ainda está disponível?',
+        ]);
 
         Livewire::actingAs($seller)
             ->test(ConversationShow::class, ['conversation' => $conversation])

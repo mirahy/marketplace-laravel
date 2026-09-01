@@ -1,6 +1,8 @@
 @php
-    $isBuyer = $conversation->buyer_id === auth()->id();
-    $otherUser = $isBuyer ? $conversation->seller : $conversation->buyer;
+    $isBuyer = $conversation && $conversation->buyer_id === auth()->id();
+    $otherUser = $conversation
+        ? ($isBuyer ? $conversation->seller : $conversation->buyer)
+        : $listing->user;
     $lastMessageDate = null;
 @endphp
 
@@ -20,7 +22,7 @@
 
     <div class="bg-white border border-gray-100 rounded-lg overflow-hidden">
         <div class="p-4 border-b border-gray-100">
-            <p class="font-medium text-gray-900">{{ $conversation->listing->title ?? __('Anúncio removido') }}</p>
+            <p class="font-medium text-gray-900">{{ ($conversation ? $conversation->listing?->title : $listing->title) ?? __('Anúncio removido') }}</p>
             <p class="text-sm text-gray-500">{{ __('Com :nome', ['nome' => $otherUser->name ?? __('Usuário removido')]) }}</p>
         </div>
 

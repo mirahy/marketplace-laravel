@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Enums\ListingStatus;
-use App\Models\Conversation;
 use App\Models\Listing;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -56,14 +55,7 @@ class ListingShow extends Component
             return;
         }
 
-        $conversation = Conversation::query()->firstOrCreate([
-            'listing_id' => $this->listing->id,
-            'buyer_id' => Auth::id(),
-        ], [
-            'seller_id' => $this->listing->user_id,
-        ]);
-
-        return redirect()->route('messages.show', $conversation);
+        return redirect()->route('messages.start', $this->listing);
     }
 
     public function pause(): void
