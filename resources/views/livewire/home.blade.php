@@ -19,11 +19,32 @@
     </div>
 
     @if ($featured->isNotEmpty())
-        <h2 class="text-lg font-semibold text-gray-900 mb-3">{{ __('Destaques') }}</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
-            @foreach ($featured as $listing)
-                <x-listing-card :listing="$listing" />
-            @endforeach
+        <div class="mb-10" x-data>
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-lg font-semibold text-gray-900">{{ __('Destaques') }}</h2>
+                <div class="flex gap-2">
+                    <button type="button" @click="$refs.featuredCarousel.scrollBy({ left: -280, behavior: 'smooth' })"
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 hover:bg-gray-50 flex items-center justify-center" aria-label="{{ __('Anterior') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <button type="button" @click="$refs.featuredCarousel.scrollBy({ left: 280, behavior: 'smooth' })"
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 hover:bg-gray-50 flex items-center justify-center" aria-label="{{ __('Próxima') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div x-ref="featuredCarousel" style="scrollbar-width: none;"
+                class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden">
+                @foreach ($featured as $listing)
+                    <div class="w-40 sm:w-48 md:w-56 shrink-0 snap-start">
+                        <x-listing-card :listing="$listing" />
+                    </div>
+                @endforeach
+            </div>
         </div>
     @endif
 
