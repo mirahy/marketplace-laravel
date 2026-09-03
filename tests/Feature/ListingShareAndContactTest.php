@@ -68,4 +68,37 @@ class ListingShareAndContactTest extends TestCase
             ->assertSee("navigator.clipboard.writeText('(67) 91234-5678')", false)
             ->assertSee(__('Copiado!'));
     }
+
+    public function test_listing_page_has_a_share_button(): void
+    {
+        $listing = Listing::factory()->create();
+
+        $response = $this->get('/anuncios/'.$listing->slug);
+
+        $response->assertOk()
+            ->assertSee('shareModal = true', false)
+            ->assertSee(__('Compartilhar'));
+    }
+
+    public function test_share_modal_has_a_copy_link_button_pointing_to_the_listing_url(): void
+    {
+        $listing = Listing::factory()->create();
+
+        $response = $this->get('/anuncios/'.$listing->slug);
+
+        $response->assertOk()
+            ->assertSee("navigator.clipboard.writeText('".route('listings.show', $listing)."')", false)
+            ->assertSee(__('Copiar link'));
+    }
+
+    public function test_share_modal_has_a_whatsapp_link_with_the_listing_title_and_url(): void
+    {
+        $listing = Listing::factory()->create(['title' => 'Sofá de canto']);
+
+        $expectedMessage = urlencode(__('Confira este anúncio: :titulo', ['titulo' => $listing->title]).' '.route('listings.show', $listing));
+
+        $response = $this->get('/anuncios/'.$listing->slug);
+
+        $response->assertOk()->assertSee('https://wa.me/?text='.$expectedMessage, false);
+    }
 }

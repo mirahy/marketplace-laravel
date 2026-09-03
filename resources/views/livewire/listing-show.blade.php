@@ -22,7 +22,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-2">
             @php $imageCount = $listing->images->count(); @endphp
-            <div x-data="{ active: 0, total: {{ $imageCount }}, lightbox: false }">
+            <div x-data="{ active: 0, total: {{ $imageCount }}, lightbox: false, shareModal: false }">
             <div class="relative w-full h-64 sm:h-96 rounded-lg bg-gray-100 overflow-hidden">
                 @forelse ($listing->images as $i => $image)
                     <img x-show="active === {{ $i }}" x-cloak @click="lightbox = true"
@@ -47,14 +47,23 @@
                     </button>
                 @endif
 
-                @if ($imageCount > 0)
-                    <button type="button" @click="lightbox = true"
-                        class="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow flex items-center justify-center" title="{{ __('Ampliar imagem') }}">
+                <div class="absolute bottom-3 right-3 flex items-center gap-2">
+                    <button type="button" @click="shareModal = true"
+                        class="w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow flex items-center justify-center" title="{{ __('Compartilhar') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.935-2.185 2.25 2.25 0 0 0-3.935 2.185Z" />
                         </svg>
                     </button>
-                @endif
+
+                    @if ($imageCount > 0)
+                        <button type="button" @click="lightbox = true"
+                            class="w-9 h-9 rounded-full bg-white/80 hover:bg-white shadow flex items-center justify-center" title="{{ __('Ampliar imagem') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+                            </svg>
+                        </button>
+                    @endif
+                </div>
             </div>
 
             @if ($imageCount > 0)
@@ -93,6 +102,40 @@
                     @endif
                 </div>
             @endif
+
+            <div x-show="shareModal" x-cloak
+                x-on:keydown.escape.window="shareModal = false"
+                class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+                @click="shareModal = false">
+                <div @click.stop x-data="{ copied: false }" class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-gray-900">{{ __('Compartilhar anúncio') }}</h3>
+                        <button type="button" @click="shareModal = false" class="text-gray-400 hover:text-gray-600" title="{{ __('Fechar') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <button type="button"
+                            @click="navigator.clipboard.writeText('{{ route('listings.show', $listing) }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                            class="w-full flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                            </svg>
+                            <span x-text="copied ? '{{ __('Copiado!') }}' : '{{ __('Copiar link') }}'"></span>
+                        </button>
+                        <a href="https://wa.me/?text={{ urlencode(__('Confira este anúncio: :titulo', ['titulo' => $listing->title]).' '.route('listings.show', $listing)) }}"
+                            target="_blank" rel="noopener noreferrer"
+                            class="w-full flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-md hover:bg-gray-50 text-sm text-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-5 w-5 text-green-500 shrink-0">
+                                <path fill="currentColor" d="M16.004 2.667c-7.363 0-13.333 5.97-13.333 13.333 0 2.351.616 4.646 1.787 6.665l-1.898 6.933a1 1 0 0 0 1.226 1.226l6.933-1.898a13.28 13.28 0 0 0 6.665 1.787h.006c7.363 0 13.333-5.97 13.333-13.333s-5.97-13.333-13.333-13.333zm0 24.24h-.005a10.87 10.87 0 0 1-5.87-1.72l-.42-.25-4.114 1.126 1.126-4.114-.25-.42a10.87 10.87 0 0 1-1.72-5.87c0-6.008 4.892-10.9 10.9-10.9 2.911 0 5.649 1.135 7.71 3.196a10.83 10.83 0 0 1 3.19 7.71c0 6.008-4.892 10.9-10.9 10.9zm5.984-8.157c-.328-.164-1.94-.957-2.24-1.066-.301-.109-.52-.164-.738.164-.219.328-.847 1.066-1.038 1.284-.191.219-.383.246-.71.082-.328-.164-1.385-.51-2.638-1.627-.975-.869-1.633-1.942-1.824-2.27-.191-.328-.02-.505.144-.668.148-.148.328-.383.492-.574.164-.191.219-.328.328-.547.109-.219.055-.41-.027-.574-.082-.164-.738-1.78-1.012-2.436-.267-.64-.538-.554-.738-.564l-.629-.011a1.21 1.21 0 0 0-.875.41c-.301.328-1.148 1.121-1.148 2.735s1.175 3.172 1.339 3.39c.164.219 2.312 3.53 5.603 4.949.783.338 1.394.54 1.87.691.786.25 1.5.215 2.065.13.63-.094 1.94-.793 2.213-1.559.273-.766.273-1.422.191-1.559-.082-.137-.301-.219-.629-.383z" />
+                            </svg>
+                            {{ __('Compartilhar no WhatsApp') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
             </div>
 
             <div class="mt-6 bg-white border border-gray-100 rounded-lg p-6">
